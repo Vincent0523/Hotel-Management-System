@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotelEase - Reservations</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .main-content {
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 py-4 px-6 flex flex-col">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold">HotelEase</h1>
+                <button id="collapse-btn" class="md:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <a href="dashboard.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reservations.html" class="flex items-center py-2 px-4 bg-blue-900 rounded">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>Reservations</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="guests.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-users mr-3"></i>
+                            <span>Guests</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="rooms.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-door-closed mr-3"></i>
+                            <span>Rooms</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="services.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-concierge-bell mr-3"></i>
+                            <span>Services</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="billing.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-file-invoice-dollar mr-3"></i>
+                            <span>Billing</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reports.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="settings.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="mt-auto">
+                <div class="flex items-center py-2 px-4">
+                    <img src="/api/placeholder/40/40" alt="Admin" class="rounded-full h-10 w-10">
+                    <div class="ml-3">
+                        <p class="font-medium">John Doe</p>
+                        <p class="text-sm text-blue-200">Admin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" class="main-content flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between py-4 px-6">
+                    <div class="flex items-center">
+                        <button id="mobile-toggle" class="md:hidden mr-6">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="text-xl font-semibold">Reservations</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="relative mr-4">
+                            <input type="text" placeholder="Search reservations..." class="py-2 px-4 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="relative mr-4">
+                            <button class="relative">
+                                <i class="fas fa-bell text-gray-500 text-xl"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 text-xs text-white flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Reservations Content -->
+            <main class="p-6">
+                <!-- Quick Reservation Actions -->
+                <div class="mb-6">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center">
+                        <div class="mb-4 md:mb-0">
+                            <h3 class="text-lg font-semibold mb-2">Reservation Management</h3>
+                            <p class="text-gray-600">Manage reservations and bookings</p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <button class="flex items-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                                <i class="fas fa-plus mr-2"></i>
+                                <span>New Reservation</span>
+                            </button>
+                            <button class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded">
+                                <i class="fas fa-filter mr-2"></i>
+                                <span>Filter</span>
+                            </button>
+                            <button class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded">
+                                <i class="fas fa-download mr-2"></i>
+                                <span>Export</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reservation Filters -->
+                <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                            <div class="relative">
+                                <input type="text" id="date-range" class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Select date range">
+                                <i class="fas fa-calendar absolute right-3 top-3 text-gray-400"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Reservation Status</label>
+                            <select class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Statuses</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="pending">Pending</option>
+                                <option value="checked-in">Checked In</option>
+                                <option value="checked-out">Checked Out</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="no-show">No Show</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Room Type</label>
+                            <select class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Room Types</option>
+                                <option value="standard">Standard</option>
+                                <option value="deluxe">Deluxe</option>
+                                <option value="suite">Suite</option>
+                                <option value="executive">Executive Suite</option>
+                                <option value="family">Family Room</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
+                            <select class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="">All Payment Statuses</option>
+                                <option value="paid">Paid</option>
+                                <option value="pending">Pending</option>
+                                <option value="partial">Partially Paid</option>
+                                <option value="refunded">Refunded</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded mr-3">
+                            Reset
+                        </button>
+                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reservations Table -->
+                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase border-b">
+                                    <th class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
+                                            <span>Booking ID</span>
+                                        </div>
+                                    </th>
+                                    <th class="px-4 py-3">Guest</th>
+                                    <th class="px-4 py-3">Room</th>
+                                    <th class="px-4 py-3">Check In/Out</th>
+                                    <th class="px-4 py-3">Amount</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3">Payment</th>
+                                    <th class="px-4 py-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
+                                            <span class="font-medium">#BK10025</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">Emma Wilson</p>
+                                                <p class="text-xs text-gray-500">emma@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>Suite 201</p>
+                                            <p class="text-xs text-gray-500">1 King Bed</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>May 21 - May 24, 2025</p>
+                                            <p class="text-xs text-gray-500">3 Nights</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>$640.00</p>
+                                            <p class="text-xs text-gray-500">$213.33/night</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Confirmed</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-800" title="More">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
+                                            <span class="font-medium">#BK10024</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">Michael Johnson</p>
+                                                <p class="text-xs text-gray-500">michael@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>Deluxe 105</p>
+                                            <p class="text-xs text-gray-500">2 Queen Beds</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>May 22 - May 26, 2025</p>
+                                            <p class="text-xs text-gray-500">4 Nights</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>$720.00</p>
+                                            <p class="text-xs text-gray-500">$180.00/night</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-800" title="More">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
+                                            <span class="font-medium">#BK10023</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">Sarah Adams</p>
+                                                <p class="text-xs text-gray-500">sarah@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>Standard 304</p>
+                                            <p class="text-xs text-gray-500">1 Queen Bed</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>May 23 - May 25, 2025</p>
+                                            <p class="text-xs text-gray-500">2 Nights</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>$320.00</p>
+                                            <p class="text-xs text-gray-500">$160.00/night</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Checked In</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-red-600 hover:text-red-800" title="Cancel">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-800" title="More">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
+                                            <span class="font-medium">#BK10022</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">David Miller</p>
+                                                <p class="text-xs text-gray-500">david@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>Suite 205</p>
+                                            <p class="text-xs text-gray-500">1 King Bed</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>May 24 - May 28, 2025</p>
+                                            <p class="text-xs text-gray-500">4 Nights</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>$940.00</p>
+                                            <p class="text-xs text-gray-500">$235.00/night</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Cancelled</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">Refunded</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-800" title="Restore">
+                                                <i class="fas fa-redo"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-800" title="More">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
+                                            <span class="font-medium">#BK10021</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">Jennifer Lopez</p>
+                                                <p class="text-xs text-gray-500">jennifer@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>Deluxe 108</p>
+                                            <p class="text-xs text-gray-500">2 Queen Beds</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>May 20 - May 22, 2025</p>
+                                            <p class="text-xs text-gray-500">2 Nights</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div>
+                                            <p>$360.00</p>
+                                            <p class="text-xs text-gray-500">$180.00/night</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded-full">Checked Out</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" title="View">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-800" title="Invoice">
+                                                <i class="fas fa-file-invoice"></i>
+                                            </button>
+                                            <button class="text-gray-600 hover:text-gray-800" title="More">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="px-4 py-3 border-t flex flex-col sm:flex-row justify-between items-center">
+                        <div class="mb-3 sm:mb-0">
+                            <p class="text-sm text-gray-500">
+                                Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">25</span> results
+                            </p>
+                        </div>
+                        <div class="flex items-center space-x-1">
+                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">Previous</button>
+                            <button class="px-3 py-1 rounded border bg-blue-600 text-white text-sm">1</button>
+                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">2</button>
+                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">3</button>
+                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">4</button>
+                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">5</button>
+                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle
+        document.getElementById('mobile-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Initialize date picker
+        flatpickr("#date-range", {
+            mode: "range",
+            dateFormat: "Y-m-d",
+            defaultDate: ["2025-05-01", "2025-05-31"]
+        });
+    </script>
+</body>
+</html>

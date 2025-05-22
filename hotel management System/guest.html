@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management System - Guests</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 20px 0;
+            height: 100vh;
+            position: fixed;
+        }
+        
+        .sidebar-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+        
+        .sidebar-header h2 {
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+        
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+        }
+        
+        .nav-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-link {
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .nav-link i {
+            margin-right: 10px;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .page-title {
+            font-size: 24px;
+            color: var(--dark-color);
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .search-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+            font-size: 14px;
+        }
+        
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            padding: 0 15px;
+            cursor: pointer;
+        }
+        
+        /* Table Styles */
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .table th, .table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        .table th {
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+            font-weight: 600;
+            border-bottom: 2px solid #ddd;
+        }
+        
+        .table tbody tr {
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .table td:last-child {
+            text-align: center;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .edit-btn {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .delete-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .view-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            color: var(--dark-color);
+        }
+        
+        .close-btn {
+            cursor: pointer;
+            font-size: 22px;
+            color: #aaa;
+        }
+        
+        .modal-body {
+            padding: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--dark-color);
+            font-weight: 500;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .modal-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #ddd;
+            text-align: right;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .pagination-btn {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        @media screen and (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h2>Hotel MS</h2>
+                <p>Hotel Management System</p>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="dashboard.html" class="nav-link">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="guests.html" class="nav-link active">
+                        <i class="fas fa-users"></i> Guests
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="rooms.html" class="nav-link">
+                        <i class="fas fa-bed"></i> Rooms
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="services.html" class="nav-link">
+                        <i class="fas fa-concierge-bell"></i> Services
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="billing.html" class="nav-link">
+                        <i class="fas fa-file-invoice-dollar"></i> Billing
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="reports.html" class="nav-link">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="settings.html" class="nav-link">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="logout.html" class="nav-link">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">Guest Management</h1>
+                <button id="addGuestBtn" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Add New Guest
+                </button>
+            </div>
+
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search guests by name, email, phone...">
+                <button class="search-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Check-in Date</th>
+                            <th>Check-out Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>G001</td>
+                            <td>John Doe</td>
+                            <td>john.doe@example.com</td>
+                            <td>+1 234-567-8901</td>
+                            <td>2025-05-15</td>
+                            <td>2025-05-20</td>
+                            <td>Current</td>
+                            <td>
+                                <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>G002</td>
+                            <td>Jane Smith</td>
+                            <td>jane.smith@example.com</td>
+                            <td>+1 987-654-3210</td>
+                            <td>2025-05-10</td>
+                            <td>2025-05-18</td>
+                            <td>Current</td>
+                            <td>
+                                <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>G003</td>
+                            <td>Robert Johnson</td>
+                            <td>robert.j@example.com</td>
+                            <td>+1 456-789-0123</td>
+                            <td>2025-05-01</td>
+                            <td>2025-05-10</td>
+                            <td>Checked Out</td>
+                            <td>
+                                <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>G004</td>
+                            <td>Emily Watson</td>
+                            <td>emily.w@example.com</td>
+                            <td>+1 567-890-1234</td>
+                            <td>2025-05-20</td>
+                            <td>2025-05-25</td>
+                            <td>Reserved</td>
+                            <td>
+                                <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>G005</td>
+                            <td>Michael Brown</td>
+                            <td>michael.b@example.com</td>
+                            <td>+1 678-901-2345</td>
+                            <td>2025-05-18</td>
+                            <td>2025-05-22</td>
+                            <td>Current</td>
+                            <td>
+                                <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                                <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination">
+                <button class="pagination-btn"><i class="fas fa-angle-left"></i></button>
+                <button class="pagination-btn active">1</button>
+                <button class="pagination-btn">2</button>
+                <button class="pagination-btn">3</button>
+                <button class="pagination-btn"><i class="fas fa-angle-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Guest Modal -->
+    <div id="addGuestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Guest</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="guestForm">
+                    <div class="form-group">
+                        <label class="form-label" for="guestName">Full Name</label>
+                        <input type="text" class="form-control" id="guestName" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="guestEmail">Email</label>
+                        <input type="email" class="form-control" id="guestEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="guestPhone">Phone</label>
+                        <input type="tel" class="form-control" id="guestPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="guestAddress">Address</label>
+                        <textarea class="form-control" id="guestAddress" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="checkInDate">Check-in Date</label>
+                        <input type="date" class="form-control" id="checkInDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="checkOutDate">Check-out Date</label>
+                        <input type="date" class="form-control" id="checkOutDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="guestStatus">Status</label>
+                        <select class="form-control" id="guestStatus" required>
+                            <option value="Reserved">Reserved</option>
+                            <option value="Current">Current</option>
+                            <option value="Checked Out">Checked Out</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" id="cancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="saveGuestBtn">Save Guest</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modal functionality
+        const addGuestBtn = document.getElementById('addGuestBtn');
+        const addGuestModal = document.getElementById('addGuestModal');
+        const closeBtn = document.querySelector('.close-btn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const saveGuestBtn = document.getElementById('saveGuestBtn');
+        const guestForm = document.getElementById('guestForm');
+
+        // Open modal
+        addGuestBtn.addEventListener('click', () => {
+            addGuestModal.style.display = 'flex';
+        });
+
+        // Close modal
+        function closeModal() {
+            addGuestModal.style.display = 'none';
+            guestForm.reset();
+        }
+
+        closeBtn.addEventListener('click', closeModal);
+        cancelBtn.addEventListener('click', closeModal);
+
+        // Close modal if clicked outside
+        window.addEventListener('click', (event) => {
+            if (event.target === addGuestModal) {
+                closeModal();
+            }
+        });
+
+        // Save guest
+        saveGuestBtn.addEventListener('click', () => {
+            // Validate form
+            const formInputs = guestForm.querySelectorAll('[required]');
+            let isValid = true;
+
+            formInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.style.borderColor = 'red';
+                } else {
+                    input.style.borderColor = '#ddd';
+                }
+            });
+
+            if (isValid) {
+                // Here would be AJAX call to backend to save guest
+                alert('Guest saved successfully!');
+                closeModal();
+                
+                // For demo purposes, add new row to table
+                const tableBody = document.querySelector('.table tbody');
+                const newRow = document.createElement('tr');
+                
+                const guestId = 'G' + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+                const guestName = document.getElementById('guestName').value;
+                const guestEmail = document.getElementById('guestEmail').value;
+                const guestPhone = document.getElementById('guestPhone').value;
+                const checkInDate = document.getElementById('checkInDate').value;
+                const checkOutDate = document.getElementById('checkOutDate').value;
+                const guestStatus = document.getElementById('guestStatus').value;
+                
+                newRow.innerHTML = `
+                    <td>${guestId}</td>
+                    <td>${guestName}</td>
+                    <td>${guestEmail}</td>
+                    <td>${guestPhone}</td>
+                    <td>${checkInDate}</td>
+                    <td>${checkOutDate}</td>
+                    <td>${guestStatus}</td>
+                    <td>
+                        <button class="action-btn view-btn"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn edit-btn"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete-btn"><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                
+                tableBody.insertBefore(newRow, tableBody.firstChild);
+            }
+        });
+
+        // Initialize action buttons
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const guestId = row.cells[0].textContent;
+                alert(`Viewing details for guest ${guestId}`);
+                // Here would show a view modal or redirect to guest detail page
+            });
+        });
+
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const guestId = row.cells[0].textContent;
+                alert(`Editing guest ${guestId}`);
+                // Here would open edit modal with pre-filled data
+            });
+        });
+
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const guestId = row.cells[0].textContent;
+                if (confirm(`Are you sure you want to delete guest ${guestId}?`)) {
+                    // Here would be AJAX call to backend to delete guest
+                    row.remove();
+                    alert(`Guest ${guestId} deleted successfully!`);
+                }
+            });
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-input');
+        const searchBtn = document.querySelector('.search-btn');
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const tableRows = document.querySelectorAll('.table tbody tr');
+            
+            tableRows.forEach(row => {
+                let found = false;
+                const cells = row.querySelectorAll('td');
+                
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                        found = true;
+                    }
+                });
+                
+                if (found) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        searchBtn.addEventListener('click', performSearch);
+        searchInput.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+
+        // Pagination functionality
+        const paginationBtns = document.querySelectorAll('.pagination-btn');
+        
+        paginationBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                paginationBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                // Here would load data for the selected page
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HotelEase - Billing Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <style>
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .main-content {
+            transition: all 0.3s;
+        }
+        .modal {
+            display: none;
+        }
+        .modal.active {
+            display: flex;
+        }
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 py-4 px-6 flex flex-col">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold">Ahinfie Hotel</h1>
+                <button id="collapse-btn" class="md:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <a href="dashboard.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reservations.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>Reservations</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="guest.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-users mr-3"></i>
+                            <span>Guests</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="rooms.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-door-closed mr-3"></i>
+                            <span>Rooms</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="services.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-concierge-bell mr-3"></i>
+                            <span>Services</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="#billing" class="flex items-center py-2 px-4 bg-blue-900 rounded">
+                            <i class="fas fa-file-invoice-dollar mr-3"></i>
+                            <span>Billing</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reports.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="settings.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="mt-auto">
+                <div class="flex items-center py-2 px-4">
+                    <img src="images.png" alt="Admin" class="rounded-full h-10 w-10">
+                    <div class="ml-3">
+                        <p class="font-medium">Antepim Awauh Vincent</p>
+                        <p class="text-sm text-blue-200">Admin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" class="main-content flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between py-4 px-6">
+                    <div class="flex items-center">
+                        <button id="mobile-toggle" class="md:hidden mr-6">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="text-xl font-semibold">Billing Management</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="relative mr-4">
+                            <input type="text" placeholder="Search invoices..." class="py-2 px-4 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="relative mr-4">
+                            <button class="relative">
+                                <i class="fas fa-bell text-gray-500 text-xl"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 text-xs text-white flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <button id="create-invoice-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center">
+                            <i class="fas fa-plus mr-2"></i>
+                            New Invoice
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Billing Content -->
+            <main class="p-6">
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Total Revenue</h3>
+                                <p class="text-2xl font-semibold">$45,280</p>
+                                <p class="text-green-500 text-sm"><i class="fas fa-arrow-up"></i> 12% from last month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-file-invoice text-blue-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Total Invoices</h3>
+                                <p class="text-2xl font-semibold">156</p>
+                                <p class="text-blue-500 text-sm"><i class="fas fa-arrow-up"></i> 8 new today</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-yellow-100 p-3 rounded-full">
+                                <i class="fas fa-clock text-yellow-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Pending Payments</h3>
+                                <p class="text-2xl font-semibold">$8,750</p>
+                                <p class="text-yellow-500 text-sm">15 invoices pending</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-red-100 p-3 rounded-full">
+                                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Overdue</h3>
+                                <p class="text-2xl font-semibold">$2,150</p>
+                                <p class="text-red-500 text-sm">3 invoices overdue</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts and Filter Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Revenue Chart -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 lg:col-span-2">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold">Revenue Trends</h3>
+                            <div class="flex space-x-2">
+                                <button class="text-sm text-blue-600 hover:text-blue-800">Week</button>
+                                <button class="text-sm text-gray-400 hover:text-blue-800">Month</button>
+                                <button class="text-sm text-gray-400 hover:text-blue-800">Year</button>
+                            </div>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="font-semibold mb-4">Payment Methods</h3>
+                        <div class="h-64">
+                            <canvas id="paymentChart"></canvas>
+                        </div>
+                        <div class="mt-4 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="flex items-center">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                                    Credit Card
+                                </span>
+                                <span>65%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="flex items-center">
+                                    <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                                    Cash
+                                </span>
+                                <span>25%</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="flex items-center">
+                                    <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+                                    Bank Transfer
+                                </span>
+                                <span>10%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoices Table -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-semibold">Recent Invoices</h3>
+                        <div class="flex space-x-4">
+                            <select class="border rounded py-2 px-3 text-sm">
+                                <option>All Status</option>
+                                <option>Paid</option>
+                                <option>Pending</option>
+                                <option>Overdue</option>
+                            </select>
+                            <select class="border rounded py-2 px-3 text-sm">
+                                <option>Last 30 days</option>
+                                <option>Last 7 days</option>
+                                <option>Last 3 months</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="text-left text-xs font-semibold text-gray-500 uppercase border-b">
+                                    <th class="px-4 py-3">Invoice #</th>
+                                    <th class="px-4 py-3">Guest</th>
+                                    <th class="px-4 py-3">Room</th>
+                                    <th class="px-4 py-3">Amount</th>
+                                    <th class="px-4 py-3">Date</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="invoices-table">
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3 font-medium">#INV-001</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">Emma Wilson</p>
+                                                <p class="text-xs text-gray-500">emma@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">Suite 201</td>
+                                    <td class="px-4 py-3 font-semibold">$480.00</td>
+                                    <td class="px-4 py-3">May 21, 2025</td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" onclick="viewInvoice('INV-001')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-800">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            <button class="text-purple-600 hover:text-purple-800">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3 font-medium">#INV-002</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">Michael Johnson</p>
+                                                <p class="text-xs text-gray-500">michael@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">Deluxe 105</td>
+                                    <td class="px-4 py-3 font-semibold">$320.00</td>
+                                    <td class="px-4 py-3">May 22, 2025</td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" onclick="viewInvoice('INV-002')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-800">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            <button class="text-purple-600 hover:text-purple-800">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3 font-medium">#INV-003</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">Sarah Adams</p>
+                                                <p class="text-xs text-gray-500">sarah@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">Standard 304</td>
+                                    <td class="px-4 py-3 font-semibold">$180.00</td>
+                                    <td class="px-4 py-3">May 23, 2025</td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" onclick="viewInvoice('INV-003')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-800">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            <button class="text-purple-600 hover:text-purple-800">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="px-4 py-3 font-medium">#INV-004</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center">
+                                            <img src="/api/placeholder/32/32" alt="Guest" class="h-8 w-8 rounded-full">
+                                            <div class="ml-3">
+                                                <p class="font-medium">David Miller</p>
+                                                <p class="text-xs text-gray-500">david@example.com</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-3">Suite 205</td>
+                                    <td class="px-4 py-3 font-semibold">$750.00</td>
+                                    <td class="px-4 py-3">May 19, 2025</td>
+                                    <td class="px-4 py-3">
+                                        <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Overdue</span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex space-x-2">
+                                            <button class="text-blue-600 hover:text-blue-800" onclick="viewInvoice('INV-004')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="text-green-600 hover:text-green-800">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                            <button class="text-purple-600 hover:text-purple-800">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex justify-between items-center mt-4">
+                        <p class="text-gray-500 text-sm">Showing 1-4 of 156 invoices</p>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 border rounded text-sm hover:bg-gray-50">Previous</button>
+                            <button class="px-3 py-1 bg-blue-600 text-white rounded text-sm">1</button>
+                            <button class="px-3 py-1 border rounded text-sm hover:bg-gray-50">2</button>
+                            <button class="px-3 py-1 border rounded text-sm hover:bg-gray-50">3</button>
+                            <button class="px-3 py-1 border rounded text-sm hover:bg-gray-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div id="invoice-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="no-print flex justify-between items-center p-6 border-b">
+                <h3 class="text-lg font-semibold">Invoice Details</h3>
+                <div class="flex space-x-2">
+                    <button onclick="printInvoice()" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        <i class="fas fa-print mr-2"></i>Print
+                    </button>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="invoice-content" class="p-6">
+                <!-- Invoice content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Invoice Modal -->
+    <div id="create-invoice-modal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+        <div class="bg-white rounded-lg max-w-2xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center p-6 border-b">
+                <h3 class="text-lg font-semibold">Create New Invoice</h3>
+                <button onclick="closeCreateModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <form class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Guest Name</label>
+                        <select class="w-full border rounded px-3 py-2">
+                            <option>Select Guest</option>
+                            <option>Emma Wilson</option>
+                            <option>Michael Johnson</option>
+                            <option>Sarah Adams</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Room Number</label>
+                        <select class="w-full border rounded px-3 py-2">
+                            <option>Select Room</option>
+                            <option>Suite 201</option>
+                            <option>Deluxe 105</option>
+                            <option>Standard 304</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Check-in Date</label>
+                        <input type="date" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Check-out Date</label>
+                        <input type="date" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Room Rate per Night</label>
+                    <input type="number" placeholder="0.00" class="w-full border rounded px-3 py-2">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Additional Services</label>
+                    <textarea placeholder="List additional services and charges..." class="w-full border rounded px-3 py-2 h-20"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Tax Rate (%)</label>
+                        <input type="number" placeholder="0" class="w-full border rounded px-3 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Discount (%)</label>
+                        <input type="number" placeholder="0" class="w-full border rounded px-3 py-2">
+                    </div>
+                </div>
+                <div class="flex justify-end space-x-4 pt-4">
+                    <button type="button" onclick="closeCreateModal()" class="px-4 py-2 border rounded hover:bg-gray-50">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Create Invoice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle
+        document.getElementById('mobile-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Create Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Revenue ($)',
+                    data: [28000, 32000, 35000, 42000, 38000, 45280],
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderColor: 'rgba(59, 130, 246, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value/1000) + 'K';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Create Payment Methods Chart
+        const paymentCtx = document.getElementById('paymentChart').getContext('2d');
+        const paymentChart = new Chart(paymentCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Credit Card', 'Cash', 'Bank Transfer'],
+                datasets: [{
+                    data: [65, 25, 10],
+                    backgroundColor: ['#3B82F6', '#10B981', '#8B5CF6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        // Modal functions
+        function viewInvoice(invoiceId) {
+            document.getElementById('invoice-modal').classList.add('active');
+            // Load invoice details (this would typically fetch from a server)
+            loadInvoiceDetails(invoiceId);
+        }
+
+        function closeModal() {
+            document.getElementById('invoice-modal').classList.remove('active');
+        }
+
+        function closeCreateModal() {
+            document.getElementById('create-invoice-modal').classList.remove('active');
+        }
+
+        function printInvoice() {
+            window.print();
+        }
+
+        function loadInvoiceDetails(invoiceId) {
+            // Sample invoice data - in a real app, this would come from your backend
+            const invoiceData = {
+                'INV-001': {
+                    id: 'INV-001',
+                    guest: 'Emma Wilson',
+                    email: 'emma@example.com',
+                    room: 'Suite 201',
+                    checkIn: '2025-05-21',
+                    checkOut: '2025-05-23',
+                    nights: 2,
+                    roomRate: 200,
+                    services: [
+                        { name: 'Room Service', amount: 45 },
+                        { name: 'Laundry', amount: 25 },
+                        { name: 'Mini Bar', amount: 30 }
+                    ],
+                    subtotal: 500,
+                    tax: 50,
+                    total: 480,
+                    status: 'Paid',
+                    paymentMethod: 'Credit Card'
+                },
+                'INV-002': {
+                    id: 'INV-002',
+                    guest: 'Michael Johnson',
+                    email: 'michael@example.com',
+                    room: 'Deluxe 105',
+                    checkIn: '2025-05-22',
+                    checkOut: '2025-05-24',
+                    nights: 2,
+                    roomRate: 150,
+                    services: [
+                        { name: 'Breakfast', amount: 20 }
+                    ],
+                    subtotal: 320,
+                    tax: 32,
+                    total: 320,
+                    status: 'Pending',
+                    paymentMethod: 'Pending'
+                }
+            };
+
+            const invoice = invoiceData[invoiceId] || invoiceData['INV-001'];
+            
+            const invoiceHTML = `
+                <div class="max-w-3xl mx-auto">
+                    <!-- Invoice Header -->
+                    <div class="text-center mb-8">
+                        <h1 class="text-3xl font-bold text-blue-800 mb-2">HotelEase</h1>
+                        <p class="text-gray-600">123 Hotel Street, City, State 12345</p>
+                        <p class="text-gray-600">Phone: (555) 123-4567 | Email: info@hotelease.com</p>
+                    </div>
+
+                    <!-- Invoice Info -->
+                    <div class="grid grid-cols-2 gap-8 mb-8">
+                        <div>
+                            <h3 class="font-semibold mb-2">Bill To:</h3>
+                            <p class="font-medium">${invoice.guest}</p>
+                            <p class="text-gray-600">${invoice.email}</p>
+                            <p class="text-gray-600">Room: ${invoice.room}</p>
+                        </div>
+                        <div class="text-right">
+                            <h3 class="font-semibold mb-2">Invoice Details:</h3>
+                            <p><span class="font-medium">Invoice #:</span> ${invoice.id}</p>
+                            <p><span class="font-medium">Date:</span> ${new Date().toLocaleDateString()}</p>
+                            <p><span class="font-medium">Status:</span> 
+                                <span class="px-2 py-1 text-xs rounded-full ${
+                                    invoice.status === 'Paid' ? 'bg-green-100 text-green-800' :
+                                    invoice.status === 'Pending' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-red-100 text-red-800'
+                                }">${invoice.status}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Stay Details -->
+                    <div class="mb-8">
+                        <h3 class="font-semibold mb-4">Stay Details:</h3>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <p class="text-sm text-gray-600">Check-in</p>
+                                    <p class="font-medium">${new Date(invoice.checkIn).toLocaleDateString()}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Check-out</p>
+                                    <p class="font-medium">${new Date(invoice.checkOut).toLocaleDateString()}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Nights</p>
+                                    <p class="font-medium">${invoice.nights}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Invoice Table -->
+                    <div class="mb-8">
+                        <table class="w-full border-collapse border border-gray-300">
+                            <thead>
+                                <tr class="bg-gray-50">
+                                    <th class="border border-gray-300 px-4 py-2 text-left">Description</th>
+                                    <th class="border border-gray-300 px-4 py-2 text-center">Quantity</th>
+                                    <th class="border border-gray-300 px-4 py-2 text-right">Rate</th>
+                                    <th class="border border-gray-300 px-4 py-2 text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border border-gray-300 px-4 py-2">Room Charges - ${invoice.room}</td>
+                                    <td class="border border-gray-300 px-4 py-2 text-center">${invoice.nights}</td>
+                                    <td class="border border-gray-300 px-4 py-2 text-right">${invoice.roomRate}</td>
+                                    <td class="border border-gray-300 px-4 py-2 text-right">${invoice.roomRate * invoice.nights}</td>
+                                </tr>
+                                ${invoice.services.map(service => `
+                                    <tr>
+                                        <td class="border border-gray-300 px-4 py-2">${service.name}</td>
+                                        <td class="border border-gray-300 px-4 py-2 text-center">1</td>
+                                        <td class="border border-gray-300 px-4 py-2 text-right">${service.amount}</td>
+                                        <td class="border border-gray-300 px-4 py-2 text-right">${service.amount}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Invoice Totals -->
+                    <div class="flex justify-end mb-8">
+                        <div class="w-64">
+                            <div class="flex justify-between py-2">
+                                <span>Subtotal:</span>
+                                <span>${invoice.subtotal}</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span>Tax (10%):</span>
+                                <span>${invoice.tax}</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-t border-gray-300 font-semibold text-lg">
+                                <span>Total:</span>
+                                <span>${invoice.total}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="bg-gray-50 p-4 rounded-lg mb-8">
+                        <h3 class="font-semibold mb-2">Payment Information:</h3>
+                        <p><span class="font-medium">Payment Method:</span> ${invoice.paymentMethod}</p>
+                        <p><span class="font-medium">Payment Status:</span> ${invoice.status}</p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="text-center text-gray-600 text-sm">
+                        <p>Thank you for choosing HotelEase!</p>
+                        <p class="mt-2">For any questions regarding this invoice, please contact us at billing@hotelease.com</p>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('invoice-content').innerHTML = invoiceHTML;
+        }
+
+        // Create invoice modal
+        document.getElementById('create-invoice-btn').addEventListener('click', function() {
+            document.getElementById('create-invoice-modal').classList.add('active');
+        });
+
+        // Close modals when clicking outside
+        document.getElementById('invoice-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('create-invoice-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeCreateModal();
+            }
+        });
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeCreateModal();
+            }
+        });
+    </script>
+    </body>
+    </html>

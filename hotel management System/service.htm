@@ -3,462 +3,596 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Management - Services</title>
+    <title>HotelEase - Services Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f5f5;
-            color: #333;
-        }
-        
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        /* Sidebar */
         .sidebar {
-            width: 250px;
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px 0;
             transition: all 0.3s;
         }
-        
-        .sidebar-header {
-            padding: 0 20px 20px;
-            border-bottom: 1px solid #34495e;
-            text-align: center;
-        }
-        
-        .sidebar-header h3 {
-            margin-bottom: 5px;
-        }
-        
-        .sidebar-menu {
-            padding: 20px 0;
-        }
-        
-        .sidebar-menu ul {
-            list-style: none;
-        }
-        
-        .sidebar-menu li {
-            margin-bottom: 5px;
-        }
-        
-        .sidebar-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-            border-left: 4px solid transparent;
-        }
-        
-        .sidebar-menu a:hover {
-            background-color: #34495e;
-            border-left-color: #3498db;
-        }
-        
-        .sidebar-menu a.active {
-            background-color: #34495e;
-            border-left-color: #3498db;
-            font-weight: bold;
-        }
-        
-        .sidebar-menu i {
-            margin-right: 10px;
-        }
-        
-        /* Main Content */
         .main-content {
-            flex: 1;
-            padding: 20px;
+            transition: all 0.3s;
         }
-        
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .search-bar {
-            display: flex;
-            align-items: center;
-        }
-        
-        .search-bar input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            margin-right: 10px;
-        }
-        
-        .search-bar button {
-            padding: 8px 12px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .user-actions button {
-            padding: 8px 12px;
-            background-color: #2ecc71;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            margin-left: 10px;
-        }
-
-        /* Services Page Specific */
-        .service-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .stat-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        
-        .stat-card h3 {
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        .stat-card .number {
-            font-size: 24px;
-            font-weight: bold;
-            color: #3498db;
-        }
-
-        .stat-card.dining {
-            border-left: 4px solid #e74c3c;
-        }
-        
-        .stat-card.housekeeping {
-            border-left: 4px solid #2ecc71;
-        }
-        
-        .stat-card.maintenance {
-            border-left: 4px solid #f39c12;
-        }
-        
-        .stat-card.concierge {
-            border-left: 4px solid #9b59b6;
-        }
-        
-        .services-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        
         .service-card {
-            background-color: white;
+            transition: all 0.3s ease;
+        }
+        .service-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .modal {
+            display: none;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 12px 24px;
             border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .service-card h3 {
-            margin-bottom: 15px;
-            color: #2c3e50;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .service-card h3 button {
-            padding: 5px 10px;
-            background-color: #3498db;
             color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
         }
-
-        .service-items {
-            max-height: 250px;
-            overflow-y: auto;
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
         }
-        
-        .service-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #f1f1f1;
+        .notification.success {
+            background-color: #10b981;
         }
-        
-        .service-item:last-child {
-            border-bottom: none;
-        }
-        
-        .service-item-details {
-            flex: 1;
-        }
-        
-        .service-item-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .service-item-desc {
-            font-size: 12px;
-            color: #777;
-        }
-        
-        .service-item-price {
-            font-weight: bold;
-            color: #3498db;
-        }
-        
-        .service-item-actions {
-            margin-left: 15px;
-        }
-        
-        .action-btn {
-            padding: 5px 10px;
-            margin-left: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .edit-btn {
-            background-color: #f39c12;
-            color: white;
-        }
-        
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-        
-        .requests-container {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .requests-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        
-        .requests-filter select {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        
-        .requests-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        .requests-table th, .requests-table td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        
-        .requests-table th {
-            background-color: #f8f9fa;
-            font-weight: bold;
-        }
-        
-        .requests-table tr:hover {
-            background-color: #f1f1f1;
-        }
-        
-        .request-status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        
-        .status-pending {
-            background-color: #fef2d9;
-            color: #f39c12;
-        }
-        
-        .status-completed {
-            background-color: #e8f7ef;
-            color: #2ecc71;
-        }
-        
-        .status-in-progress {
-            background-color: #e3f2fd;
-            color: #3498db;
-        }
-        
-        .status-cancelled {
-            background-color: #fae5e3;
-            color: #e74c3c;
-        }
-        
-        .action-btn {
-            padding: 5px 10px;
-            margin-right: 5px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-        
-        .view-btn {
-            background-color: #3498db;
-            color: white;
-        }
-        
-        .complete-btn {
-            background-color: #2ecc71;
-            color: white;
-        }
-        
-        .cancel-btn {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        /* Responsive */
-        @media (max-width: 992px) {
-            .services-container {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-            }
-            
-            .sidebar {
-                width: 100%;
-                padding: 10px 0;
-            }
-            
-            .service-stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .service-stats {
-                grid-template-columns: 1fr;
-            }
-            
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            .search-bar, .user-actions {
-                margin-top: 10px;
-                width: 100%;
-            }
+        .notification.error {
+            background-color: #ef4444;
         }
     </style>
 </head>
-<body>
-    <div class="container">
+<body class="bg-gray-100">
+    <div class="flex h-screen">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h3>Hotel Management</h3>
-                <p>Admin Dashboard</p>
+        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 py-4 px-6 flex flex-col">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold">Ahinfie Hotel</h1>
+                <button id="collapse-btn" class="md:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
             </div>
-            <div class="sidebar-menu">
+            <nav>
                 <ul>
-                    <li><a href="#">Rooms</a></li>
-                    <li><a href="#" class="active">Services</a></li>
-                    <li><a href="#">Billing</a></li>
-                    <li><a href="#">Reports</a></li>
-                    <li><a href="#">Settings</a></li>
+                    <li class="mb-4">
+                        <a href="dashbooard.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reservations.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>Reservations</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="guest.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-users mr-3"></i>
+                            <span>Guests</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="rooms.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-door-closed mr-3"></i>
+                            <span>Rooms</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="#services" class="flex items-center py-2 px-4 bg-blue-900 rounded">
+                            <i class="fas fa-concierge-bell mr-3"></i>
+                            <span>Services</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="billing.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-file-invoice-dollar mr-3"></i>
+                            <span>Billing</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reports.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="settings.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
                 </ul>
+            </nav>
+            <div class="mt-auto">
+                <div class="flex items-center py-2 px-4">
+                    <img src="images.png" alt="Admin" class="rounded-full h-10 w-10">
+                    <div class="ml-3">
+                        <p class="font-medium">Antepim Awuah Vincent</p>
+                        <p class="text-sm text-blue-200">Admin</p>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="main-content">
-            <div class="header">
-                <h2>Service Management</h2>
-                <div class="search-bar">
-                    <input type="text" placeholder="Search services...">
-                    <button>Search</button>
+        <div id="main-content" class="main-content flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between py-4 px-6">
+                    <div class="flex items-center">
+                        <button id="mobile-toggle" class="md:hidden mr-6">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="text-xl font-semibold">Services Management</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="relative mr-4">
+                            <input type="text" id="searchInput" placeholder="Search services..." class="py-2 px-4 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="relative mr-4">
+                            <button class="relative">
+                                <i class="fas fa-bell text-gray-500 text-xl"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 text-xs text-white flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="user-actions">
-                    <button>Notifications</button>
-                    <button>Profile</button>
-                </div>
-            </div>
+            </header>
 
-            <!-- Service Statistics -->
-            <div class="service-stats">
-                <div class="stat-card dining">
-                    <h3>Dining Requests</h3>
-                    <div class="number">15</div>
-                </div>
-                <div class="stat-card housekeeping">
-                    <h3>Housekeeping</h3>
-                    <div class="number">8</div>
-                </div>
-                <div class="stat-card maintenance">
-                    <h3>Maintenance</h3>
-                    <div class="number">3</div>
-                </div>
-                <div class="stat-card concierge">
-                    <h3>Concierge</h3>
-                    <div class="number">6</div>
-                </div>
-            </div>
-
-            <!-- Service Categories -->
-            <div class="services-container">
-                <div class="service-card">
-                    <h3>
-                        Dining Services
-                        <button id="add-dining-btn">+ Add Service</button>
-                    </h3>
-                    <div class="service-items">
-                        <div class="service-item">
-                            <div class="service-item-details">
-                                <div class="service-item-name">Room Service - Breakfast</div>
-                                <div class="service-item-desc">Continental or American breakfast delivered to room</div>
+            <!-- Services Content -->
+            <main class="p-6">
+                <!-- Service Statistics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-3 rounded-full">
+                                <i class="fas fa-concierge-bell text-blue-600 text-xl"></i>
                             </div>
-                            <div class="service-item-price">$25</div>
-                            <div class="service-item-actions">
-                                <button class="action-btn edit-btn">Edit</button>
-                                <button class="action-btn delete-btn">Delete</button>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Total Services</h3>
+                                <p class="text-2xl font-semibold" id="totalServices">18</p>
+                                <p class="text-blue-500 text-sm">Active services</p>
                             </div>
                         </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-green-100 p-3 rounded-full">
+                                <i class="fas fa-chart-line text-green-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Monthly Revenue</h3>
+                                <p class="text-2xl font-semibold" id="monthlyRevenue">$12,450</p>
+                                <p class="text-green-500 text-sm"><i class="fas fa-arrow-up"></i> 15% from last month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-purple-100 p-3 rounded-full">
+                                <i class="fas fa-users text-purple-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Total Bookings</h3>
+                                <p class="text-2xl font-semibold" id="totalBookings">247</p>
+                                <p class="text-purple-500 text-sm">This month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <div class="flex items-center">
+                            <div class="bg-yellow-100 p-3 rounded-full">
+                                <i class="fas fa-star text-yellow-600 text-xl"></i>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-gray-500 text-sm">Avg. Rating</h3>
+                                <p class="text-2xl font-semibold" id="avgRating">4.8</p>
+                                <p class="text-yellow-500 text-sm">Customer satisfaction</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Tabs -->
+                <div class="bg-white rounded-lg shadow-sm mb-6">
+                    <div class="border-b border-gray-200">
+                        <div class="flex flex-wrap">
+                            <button class="tab-btn py-4 px-6 text-sm font-medium text-blue-600 border-b-2 border-blue-600" data-tab="all">
+                                All Services
+                            </button>
+                            <button class="tab-btn py-4 px-6 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="dining">
+                                Dining
+                            </button>
+                            <button class="tab-btn py-4 px-6 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="wellness">
+                                Wellness & Spa
+                            </button>
+                            <button class="tab-btn py-4 px-6 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="recreation">
+                                Recreation
+                            </button>
+                            <button class="tab-btn py-4 px-6 text-sm font-medium text-gray-500 hover:text-gray-700" data-tab="business">
+                                Business
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+                    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+                        <div class="mb-4 md:mb-0">
+                            <h3 class="font-semibold text-lg">Service Catalog</h3>
+                            <p class="text-gray-500 text-sm">Manage your hotel services and amenities</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button id="addServiceBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
+                                <i class="fas fa-plus mr-2"></i>
+                                Add Service
+                            </button>
+                            <button id="bulkActionBtn" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center">
+                                <i class="fas fa-cogs mr-2"></i>
+                                Bulk Actions
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <div class="flex items-center">
+                            <label class="text-sm font-medium text-gray-700 mr-2">Filter by Category:</label>
+                            <select id="categoryFilter" class="border rounded-lg px-3 py-2 text-sm">
+                                <option value="">All Categories</option>
+                                <option value="Dining">Dining</option>
+                                <option value="Wellness">Wellness & Spa</option>
+                                <option value="Recreation">Recreation</option>
+                                <option value="Business">Business</option>
+                                <option value="Transportation">Transportation</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center">
+                            <label class="text-sm font-medium text-gray-700 mr-2">Sort by:</label>
+                            <select id="sortBy" class="border rounded-lg px-3 py-2 text-sm">
+                                <option value="name">Name</option>
+                                <option value="price">Price</option>
+                                <option value="popularity">Popularity</option>
+                                <option value="rating">Rating</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Services Chart -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="font-semibold mb-4">Service Revenue Breakdown</h3>
+                        <div class="h-64">
+                            <canvas id="serviceRevenueChart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <!-- Popular Services -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="font-semibold mb-4">Most Popular Services</h3>
+                        <div class="space-y-4" id="popularServicesList">
+                            <!-- Popular services will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Services List -->
+                <div id="servicesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Service cards will be populated here -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add/Edit Service Modal -->
+    <div id="serviceModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="modalTitle" class="text-xl font-semibold">Add New Service</h3>
+                <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="serviceForm">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Service Name</label>
+                    <input type="text" id="serviceName" class="w-full border rounded-lg px-3 py-2" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                    <select id="serviceCategory" class="w-full border rounded-lg px-3 py-2" required>
+                        <option value="">Select Category</option>
+                        <option value="Dining">Dining</option>
+                        <option value="Wellness">Wellness & Spa</option>
+                        <option value="Recreation">Recreation</option>
+                        <option value="Business">Business</option>
+                        <option value="Transportation">Transportation</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea id="serviceDescription" class="w-full border rounded-lg px-3 py-2 h-20" required></textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Price ($)</label>
+                    <input type="number" id="servicePrice" step="0.01" class="w-full border rounded-lg px-3 py-2" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Duration (minutes)</label>
+                    <input type="number" id="serviceDuration" class="w-full border rounded-lg px-3 py-2">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Available Hours</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="time" id="serviceStartTime" class="border rounded-lg px-3 py-2">
+                        <input type="time" id="serviceEndTime" class="border rounded-lg px-3 py-2">
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="serviceStatus" class="w-full border rounded-lg px-3 py-2" required>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Maintenance">Under Maintenance</option>
+                    </select>
+                </div>
+                <div class="flex gap-4">
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
+                        Save Service
+                    </button>
+                    <button type="button" id="cancelModal" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        // Sample services data
+        let services = [
+            { id: 1, name: 'Room Service', category: 'Dining', description: '24/7 in-room dining service', price: 25, duration: 30, startTime: '00:00', endTime: '23:59', status: 'Active', bookings: 127, rating: 4.8 },
+            { id: 2, name: 'Spa Treatment', category: 'Wellness', description: 'Full body massage and relaxation', price: 120, duration: 90, startTime: '08:00', endTime: '22:00', status: 'Active', bookings: 89, rating: 4.9 },
+            { id: 3, name: 'Airport Transfer', category: 'Transportation', description: 'Luxury car service to/from airport', price: 45, duration: 60, startTime: '06:00', endTime: '23:00', status: 'Active', bookings: 156, rating: 4.7 },
+            { id: 4, name: 'Fitness Center', category: 'Recreation', description: '24/7 access to modern fitness equipment', price: 15, duration: 120, startTime: '00:00', endTime: '23:59', status: 'Active', bookings: 98, rating: 4.6 },
+            { id: 5, name: 'Business Center', category: 'Business', description: 'Printing, copying, and meeting facilities', price: 20, duration: 60, startTime: '06:00', endTime: '22:00', status: 'Active', bookings: 67, rating: 4.5 },
+            { id: 6, name: 'Laundry Service', category: 'Dining', description: 'Same-day laundry and dry cleaning', price: 30, duration: 480, startTime: '07:00', endTime: '19:00', status: 'Active', bookings: 134, rating: 4.8 },
+            { id: 7, name: 'Pool Service', category: 'Recreation', description: 'Poolside bar and towel service', price: 10, duration: 240, startTime: '08:00', endTime: '20:00', status: 'Active', bookings: 89, rating: 4.7 },
+            { id: 8, name: 'Concierge Service', category: 'Business', description: 'Personal assistance and recommendations', price: 0, duration: 15, startTime: '08:00', endTime: '22:00', status: 'Active', bookings: 203, rating: 4.9 }
+        ];
+
+        let currentEditId = null;
+        let serviceChart = null;
+
+        // Status color mapping
+        const statusColors = {
+            'Active': 'bg-green-100 text-green-800',
+            'Inactive': 'bg-gray-100 text-gray-800',
+            'Maintenance': 'bg-yellow-100 text-yellow-800'
+        };
+
+        // Category icons
+        const categoryIcons = {
+            'Dining': 'fas fa-utensils',
+            'Wellness': 'fas fa-spa',
+            'Recreation': 'fas fa-swimmer',
+            'Business': 'fas fa-briefcase',
+            'Transportation': 'fas fa-car'
+        };
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            renderServices();
+            updateStatistics();
+            renderPopularServices();
+            initializeChart();
+        });
+
+        // Mobile sidebar toggle
+        document.getElementById('mobile-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const tab = this.dataset.tab;
+                
+                // Update active tab
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('text-blue-600', 'border-b-2', 'border-blue-600');
+                    b.classList.add('text-gray-500');
+                });
+                this.classList.add('text-blue-600', 'border-b-2', 'border-blue-600');
+                this.classList.remove('text-gray-500');
+                
+                // Filter services by tab
+                filterServicesByTab(tab);
+            });
+        });
+
+        // Modal functionality
+        document.getElementById('addServiceBtn').addEventListener('click', function() {
+            openModal();
+        });
+
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+        document.getElementById('cancelModal').addEventListener('click', closeModal);
+
+        document.getElementById('serviceForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveService();
+        });
+
+        // Add event listeners for filters
+        document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+        document.getElementById('searchInput').addEventListener('input', applyFilters);
+        document.getElementById('sortBy').addEventListener('change', applyFilters);
+
+        // Render services
+        function renderServices(servicesToRender = services) {
+            const grid = document.getElementById('servicesGrid');
+            grid.innerHTML = '';
+
+            servicesToRender.forEach(service => {
+                const serviceCard = document.createElement('div');
+                serviceCard.className = 'service-card bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500';
+                
+                serviceCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center">
+                            <div class="bg-blue-100 p-2 rounded-full mr-3">
+                                <i class="${categoryIcons[service.category] || 'fas fa-concierge-bell'} text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-lg">${service.name}</h3>
+                                <p class="text-gray-500 text-sm">${service.category}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editService(${service.id})" class="text-blue-600 hover:text-blue-800 p-1">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="deleteService(${service.id})" class="text-red-600 hover:text-red-800 p-1">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">${service.description}</p>
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="px-2 py-1 text-xs rounded-full ${statusColors[service.status]}">${service.status}</span>
+                        <div class="flex items-center text-yellow-500">
+                            <i class="fas fa-star mr-1"></i>
+                            <span class="text-sm">${service.rating}</span>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 text-sm mb-4">
+                        <div>
+                            <p class="text-gray-500">Price</p>
+                            <p class="font-semibold">${service.price > 0 ? '$' + service.price : 'Free'}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500">Duration</p>
+                            <p class="font-semibold">${service.duration} min</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-500 mb-4">
+                        <p><i class="fas fa-clock mr-1"></i> ${service.startTime} - ${service.endTime}</p>
+                        <p><i class="fas fa-users mr-1"></i> ${service.bookings} bookings this month</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="toggleServiceStatus(${service.id})" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded text-sm">
+                            ${service.status === 'Active' ? 'Deactivate' : 'Activate'}
+                        </button>
+                        <button onclick="viewServiceDetails(${service.id})" class="flex-1 bg-blue-100 hover:bg-blue-200 text-blue-700 py-2 px-4 rounded text-sm">
+                            View Details
+                        </button>
+                    </div>
+                `;
+                
+                grid.appendChild(serviceCard);
+            });
+        }
+
+        // Filter functions
+        function filterServicesByTab(tab) {
+            let filteredServices = services;
+            
+            if (tab !== 'all') {
+                const categoryMap = {
+                    'dining': 'Dining',
+                    'wellness': 'Wellness',
+                    'recreation': 'Recreation',
+                    'business': 'Business'
+                };
+                
+                if (categoryMap[tab]) {
+                    filteredServices = services.filter(service => service.category === categoryMap[tab]);
+                }
+            }
+            
+            renderServices(filteredServices);
+        }
+
+        function applyFilters() {
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const sortBy = document.getElementById('sortBy').value;
+
+            let filteredServices = services.filter(service => {
+                const matchesCategory = !categoryFilter || service.category === categoryFilter;
+                const matchesSearch = !searchTerm || 
+                    service.name.toLowerCase().includes(searchTerm) ||
+                    service.description.toLowerCase().includes(searchTerm) ||
+                    service.category.toLowerCase().includes(searchTerm);
+
+                return matchesCategory && matchesSearch;
+            });
+
+            // Sort services
+            filteredServices.sort((a, b) => {
+                switch (sortBy) {
+                    case 'price':
+                        return a.price - b.price;
+                    case 'popularity':
+                        return b.bookings - a.bookings;
+                    case 'rating':
+                        return b.rating - a.rating;
+                    default:
+                        return a.name.localeCompare(b.name);
+                }
+            });
+
+            renderServices(filteredServices);
+        }
+
+        // Modal functions
+        function openModal(service = null) {
+            const modal = document.getElementById('serviceModal');
+            const title = document.getElementById('modalTitle');
+            
+            if (service) {
+                title.textContent = 'Edit Service';
+                currentEditId = service.id;
+                fillFormData(service);
+            } else {
+                title.textContent = 'Add New Service';
+                currentEditId = null;
+                clearFormData();
+            }
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('serviceModal');
+            modal.classList.remove('active');
+            currentEditId = null;
+        }
+    </script>
+</body>
+</html>

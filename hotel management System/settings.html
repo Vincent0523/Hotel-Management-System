@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - HotelEase</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .sidebar {
+            transition: all 0.3s;
+        }
+        .main-content {
+            transition: all 0.3s;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button.active {
+            background-color: #3B82F6;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 py-4 px-6 flex flex-col">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold">AKWAABA HOTEL</h1>
+                <button id="collapse-btn" class="md:hidden">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            <nav>
+                <ul>
+                    <li class="mb-4">
+                        <a href="index.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reservations.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-calendar-check mr-3"></i>
+                            <span>Reservations</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="guest.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-users mr-3"></i>
+                            <span>Guests</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="rooms.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-door-closed mr-3"></i>
+                            <span>Rooms</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="services.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-concierge-bell mr-3"></i>
+                            <span>Services</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="billing.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-file-invoice-dollar mr-3"></i>
+                            <span>Billing</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="reports.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
+                            <i class="fas fa-chart-line mr-3"></i>
+                            <span>Reports</span>
+                        </a>
+                    </li>
+                    <li class="mb-4">
+                        <a href="#settings" class="flex items-center py-2 px-4 bg-blue-900 rounded">
+                            <i class="fas fa-cog mr-3"></i>
+                            <span>Settings</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="mt-auto">
+                <div class="flex items-center py-2 px-4">
+                    <img src="images.png" alt="Admin" class="rounded-full h-10 w-10">
+                    <div class="ml-3">
+                        <p class="font-medium">Antepim Awuah Vincent</p>
+                        <p class="text-sm text-blue-200">Admin</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content" class="main-content flex-1 overflow-x-hidden overflow-y-auto">
+            <!-- Top Navigation -->
+            <header class="bg-white shadow-sm">
+                <div class="flex items-center justify-between py-4 px-6">
+                    <div class="flex items-center">
+                        <button id="mobile-toggle" class="md:hidden mr-6">
+                            <i class="fas fa-bars"></i>
+                        </button>
+                        <h2 class="text-xl font-semibold">Settings</h2>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="relative mr-4">
+                            <input type="text" placeholder="Search..." class="py-2 px-4 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+                        </div>
+                        <div class="relative mr-4">
+                            <button class="relative">
+                                <i class="fas fa-bell text-gray-500 text-xl"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 text-xs text-white flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Settings Content -->
+            <main class="p-6">
+                <!-- Settings Tabs -->
+                <div class="bg-white rounded-lg shadow-sm mb-6">
+                    <div class="border-b">
+                        <nav class="flex space-x-8 px-6 py-4">
+                            <button class="tab-button active text-sm font-medium py-2 px-4 rounded-md" data-tab="general">
+                                <i class="fas fa-cog mr-2"></i>General
+                            </button>
+                            <button class="tab-button text-sm font-medium py-2 px-4 rounded-md text-gray-500 hover:text-gray-700" data-tab="hotel">
+                                <i class="fas fa-building mr-2"></i>Hotel Info
+                            </button>
+                            <button class="tab-button text-sm font-medium py-2 px-4 rounded-md text-gray-500 hover:text-gray-700" data-tab="pricing">
+                                <i class="fas fa-dollar-sign mr-2"></i>Pricing
+                            </button>
+                            <button class="tab-button text-sm font-medium py-2 px-4 rounded-md text-gray-500 hover:text-gray-700" data-tab="users">
+                                <i class="fas fa-users mr-2"></i>Users
+                            </button>
+                            <button class="tab-button text-sm font-medium py-2 px-4 rounded-md text-gray-500 hover:text-gray-700" data-tab="notifications">
+                                <i class="fas fa-bell mr-2"></i>Notifications
+                            </button>
+                            <button class="tab-button text-sm font-medium py-2 px-4 rounded-md text-gray-500 hover:text-gray-700" data-tab="security">
+                                <i class="fas fa-shield-alt mr-2"></i>Security
+                            </button>
+                        </nav>
+                    </div>
+
+                    <!-- General Settings Tab -->
+                    <div id="general" class="tab-content active p-6">
+                        <h3 class="text-lg font-semibold mb-6">General Settings</h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Time Zone</label>
+                                <select class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option>GMT (Greenwich Mean Time)</option>
+                                    <option>EST (Eastern Standard Time)</option>
+                                    <option>PST (Pacific Standard Time)</option>
+                                    <option>CET (Central European Time)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
+                                <select class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option>DD/MM/YYYY</option>
+                                    <option>MM/DD/YYYY</option>
+                                    <option>YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+                                <select class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option>USD ($)</option>
+                                    <option>EUR (€)</option>
+                                    <option>GBP (£)</option>
+                                    <option>JPY (¥)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Language</label>
+                                <select class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option>English</option>
+                                    <option>Spanish</option>
+                                    <option>French</option>
+                                    <option>German</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <h4 class="text-md font-medium mb-4">System Preferences</h4>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">Enable automatic backups</span>
+                                    <label class="switch relative inline-block w-10 h-6">
+                                        <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                        <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">Send daily reports</span>
+                                    <label class="switch relative inline-block w-10 h-6">
+                                        <input type="checkbox" class="opacity-0 w-0 h-0">
+                                        <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm">Maintenance mode</span>
+                                    <label class="switch relative inline-block w-10 h-6">
+                                        <input type="checkbox" class="opacity-0 w-0 h-0">
+                                        <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            Save Notification Settings
+                        </button>
+                    </div>
+
+                    <!-- Security Tab -->
+                    <div id="security" class="tab-content p-6">
+                        <h3 class="text-lg font-semibold mb-6">Security Settings</h3>
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Password Policy</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Minimum Password Length</label>
+                                        <input type="number" value="8" min="6" max="20" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Password Expiry (days)</label>
+                                        <input type="number" value="90" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                </div>
+                                <div class="space-y-3 mt-4">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Require uppercase letters</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Require numbers</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Require special characters</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Two-Factor Authentication</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Enable 2FA for all users</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Require 2FA for admin accounts</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Session Management</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
+                                        <input type="number" value="30" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Max Concurrent Sessions</label>
+                                        <input type="number" value="3" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Access Control</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Log all user activities</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Block after failed login attempts</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Max Failed Login Attempts</label>
+                                    <input type="number" value="5" class="w-32 p-2 border border-gray-300 rounded-md">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            Update Security Settings
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle
+        document.getElementById('mobile-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and buttons
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding content
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Toggle switches functionality
+        document.querySelectorAll('.switch input').forEach(toggle => {
+            toggle.addEventListener('change', function() {
+                const slider = this.nextElementSibling;
+                if (this.checked) {
+                    slider.style.backgroundColor = '#3B82F6';
+                    slider.style.transform = 'translateX(16px)';
+                } else {
+                    slider.style.backgroundColor = '#D1D5DB';
+                    slider.style.transform = 'translateX(0)';
+                }
+            });
+            
+            // Initialize toggle states
+            const slider = toggle.nextElementSibling;
+            if (toggle.checked) {
+                slider.style.backgroundColor = '#3B82F6';
+                slider.style.transform = 'translateX(16px)';
+            } else {
+                slider.style.backgroundColor = '#D1D5DB';
+                slider.style.transform = 'translateX(0)';
+            }
+        });
+
+        // Add some interactivity for form validation
+        document.querySelectorAll('input[type="email"]').forEach(input => {
+            input.addEventListener('blur', function() {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(this.value) && this.value !== '') {
+                    this.style.borderColor = '#EF4444';
+                } else {
+                    this.style.borderColor = '#D1D5DB';
+                }
+            });
+        });
+
+        // Success message simulation
+        document.querySelectorAll('button[type="button"]').forEach(button => {
+            if (button.textContent.includes('Save') || button.textContent.includes('Update')) {
+                button.addEventListener('click', function() {
+                    const originalText = this.textContent;
+                    const originalBg = this.className;
+                    
+                    this.textContent = 'Saved!';
+                    this.className = this.className.replace('bg-blue-600', 'bg-green-600').replace('hover:bg-blue-700', 'hover:bg-green-700');
+                    
+                    setTimeout(() => {
+                        this.textContent = originalText;
+                        this.className = originalBg;
+                    }, 2000);
+                });
+            }
+        });
+    </script>
+
+    <style>
+        /* Custom styles for toggle switches */
+        .switch input:checked + .slider {
+            background-color: #3B82F6;
+        }
+        
+        .switch input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #D1D5DB;
+            transition: .3s;
+            border-radius: 20px;
+        }
+        
+        /* Hover effects */
+        .hover\\:bg-gray-50:hover {
+            background-color: #F9FAFB;
+        }
+        
+        /* Focus styles */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3B82F6;
+        }
+    </style>
+</body>
+</html>py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            Save Changes
+                        </button>
+                    </div>
+
+                    <!-- Hotel Information Tab -->
+                    <div id="hotel" class="tab-content p-6">
+                        <h3 class="text-lg font-semibold mb-6">Hotel Information</h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div class="lg:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Hotel Name</label>
+                                <input type="text" value="AKWAABA HOTEL" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div class="lg:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Address</label>
+                                <textarea rows="3" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter hotel address">123 Main Street, Accra, Ghana</textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                                <input type="tel" value="+233 123 456 789" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                                <input type="email" value="info@akwaabahotel.com" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Website</label>
+                                <input type="url" value="www.akwaabahotel.com" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Star Rating</label>
+                                <select class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option>5 Star</option>
+                                    <option>4 Star</option>
+                                    <option>3 Star</option>
+                                    <option>2 Star</option>
+                                    <option>1 Star</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Check-in Time</label>
+                                <input type="time" value="15:00" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Check-out Time</label>
+                                <input type="time" value="11:00" class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <button class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            Update Hotel Info
+                        </button>
+                    </div>
+
+                    <!-- Pricing Settings Tab -->
+                    <div id="pricing" class="tab-content p-6">
+                        <h3 class="text-lg font-semibold mb-6">Pricing Settings</h3>
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Room Type Rates</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <span>Standard Room</span>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm text-gray-500">$</span>
+                                            <input type="number" value="120" class="w-20 p-2 border border-gray-300 rounded-md">
+                                            <span class="text-sm text-gray-500">per night</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span>Deluxe Room</span>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm text-gray-500">$</span>
+                                            <input type="number" value="180" class="w-20 p-2 border border-gray-300 rounded-md">
+                                            <span class="text-sm text-gray-500">per night</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span>Suite</span>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm text-gray-500">$</span>
+                                            <input type="number" value="350" class="w-20 p-2 border border-gray-300 rounded-md">
+                                            <span class="text-sm text-gray-500">per night</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Additional Charges</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Tax Rate (%)</label>
+                                        <input type="number" value="15" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Service Fee ($)</label>
+                                        <input type="number" value="25" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Cleaning Fee ($)</label>
+                                        <input type="number" value="15" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Cancellation Fee ($)</label>
+                                        <input type="number" value="50" class="w-full p-2 border border-gray-300 rounded-md">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            Save Pricing
+                        </button>
+                    </div>
+
+                    <!-- Users Management Tab -->
+                    <div id="users" class="tab-content p-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-lg font-semibold">User Management</h3>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Add User
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full bg-white">
+                                <thead>
+                                    <tr class="text-left text-sm font-semibold text-gray-500 uppercase border-b">
+                                        <th class="px-4 py-3">User</th>
+                                        <th class="px-4 py-3">Role</th>
+                                        <th class="px-4 py-3">Status</th>
+                                        <th class="px-4 py-3">Last Login</th>
+                                        <th class="px-4 py-3">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center">
+                                                <img src="images.png" alt="User" class="h-8 w-8 rounded-full">
+                                                <div class="ml-3">
+                                                    <p class="font-medium">Antepim Awuah Vincent</p>
+                                                    <p class="text-xs text-gray-500">vincent@hotel.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Admin</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Active</span>
+                                        </td>
+                                        <td class="px-4 py-3">2 hours ago</td>
+                                        <td class="px-4 py-3">
+                                            <button class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center">
+                                                <img src="images.png" alt="User" class="h-8 w-8 rounded-full">
+                                                <div class="ml-3">
+                                                    <p class="font-medium">Sarah Johnson</p>
+                                                    <p class="text-xs text-gray-500">sarah@hotel.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Manager</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Active</span>
+                                        </td>
+                                        <td class="px-4 py-3">1 day ago</td>
+                                        <td class="px-4 py-3">
+                                            <button class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center">
+                                                <img src="images.png" alt="User" class="h-8 w-8 rounded-full">
+                                                <div class="ml-3">
+                                                    <p class="font-medium">Mike Davis</p>
+                                                    <p class="text-xs text-gray-500">mike@hotel.com</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Staff</span>
+                                        </td>
+                                        <td class="px-4 py-3">
+                                            <span class="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded-full">Inactive</span>
+                                        </td>
+                                        <td class="px-4 py-3">1 week ago</td>
+                                        <td class="px-4 py-3">
+                                            <button class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-edit"></i></button>
+                                            <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Tab -->
+                    <div id="notifications" class="tab-content p-6">
+                        <h3 class="text-lg font-semibold mb-6">Notification Settings</h3>
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">Email Notifications</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">New reservations</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Cancellations</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Payment confirmations</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Daily reports</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium mb-4">SMS Notifications</h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Check-in reminders</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-sm">Emergency alerts</span>
+                                        <label class="switch relative inline-block w-10 h-6">
+                                            <input type="checkbox" checked class="opacity-0 w-0 h-0">
+                                            <span class="slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 rounded-full transition-all duration-300"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>

@@ -4,217 +4,716 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HotelEase - Rooms Management</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .h-screen {
+            height: 100vh;
+        }
+
+        /* Sidebar Styles */
         .sidebar {
+            background-color: #1e40af;
+            color: white;
+            width: 256px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-direction: column;
             transition: all 0.3s;
         }
+
+        .sidebar h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #1d4ed8;
+        }
+
+        .sidebar nav a.active {
+            background-color: #1e3a8a;
+        }
+
+        .sidebar nav a i {
+            margin-right: 0.75rem;
+        }
+
+        .admin-profile {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+
+        .admin-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            background-color: #9ca3af;
+        }
+
+        .admin-profile div p:first-child {
+            font-weight: 500;
+        }
+
+        .admin-profile div p:last-child {
+            font-size: 0.875rem;
+            color: #bfdbfe;
+        }
+
+        /* Main Content */
         .main-content {
-            transition: all 0.3s;
+            flex: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
         }
+
+        /* Header */
+        header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.5rem 1rem;
+            padding-right: 2.5rem;
+            border-radius: 9999px;
+            background-color: #f3f4f6;
+            border: none;
+            outline: none;
+            width: 250px;
+        }
+
+
+        .search-box i {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .notification-btn .badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content */
+        main {
+            padding: 1.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-icon {
+            padding: 0.75rem;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .stat-icon.green {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+
+        .stat-icon.red {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .stat-icon.yellow {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .stat-icon.purple {
+            background-color: #f3e8ff;
+            color: #9333ea;
+        }
+
+        .stat-info h3 {
+            color: #6b7280;
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info .stat-detail {
+            font-size: 0.875rem;
+        }
+
+        /* Controls Section */
+        .controls-section {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .controls-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .controls-header h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .controls-header p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .add-room-btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .add-room-btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .filter-group select {
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            outline: none;
+        }
+
+        .filter-group select:focus {
+            border-color: #3b82f6;
+        }
+
+        /* Rooms Grid */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
         .room-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #3b82f6;
+            padding: 1.5rem;
             transition: all 0.3s ease;
         }
+
         .room-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
+
+        .room-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .room-info h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .room-info p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .room-actions button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            transition: background-color 0.3s;
+        }
+
+        .room-actions button:hover {
+            background-color: #f3f4f6;
+        }
+
+        .room-actions .edit-btn {
+            color: #3b82f6;
+        }
+
+        .room-actions .delete-btn {
+            color: #ef4444;
+        }
+
+        .room-status {
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 9999px;
+        }
+
+        .status-available {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-occupied {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-cleaning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-maintenance {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .room-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+
+        .room-details div p:first-child {
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+
+        .room-details div p:last-child {
+            font-weight: 600;
+        }
+
+        .room-footer {
+            border-top: 1px solid #e5e7eb;
+            padding-top: 1rem;
+        }
+
+        .change-status-btn {
+            width: 100%;
+            background-color: #f3f4f6;
+            color: #374151;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.3s;
+        }
+
+        .change-status-btn:hover {
+            background-color: #e5e7eb;
+        }
+
+        /* Modal */
         .modal {
             display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 50;
+            align-items: center;
+            justify-content: center;
         }
+
         .modal.active {
             display: flex;
         }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            max-width: 28rem;
+            width: 100%;
+            margin: 1rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9ca3af;
+            font-size: 1.25rem;
+        }
+
+        .modal-close:hover {
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #3b82f6;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .form-actions button {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #d1d5db;
+            color: #374151;
+        }
+
+        .btn-secondary:hover {
+            background-color: #9ca3af;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -256px;
+                top: 0;
+                height: 100vh;
+                z-index: 40;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .controls-header {
+                flex-direction: column;
+                align-items: start;
+                gap: 1rem;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .search-box input {
+                width: 200px;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100">
+<body>
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 py-4 px-6 flex flex-col">
+        <div id="sidebar" class="sidebar">
             <div class="flex items-center justify-between mb-8">
-                <h1 class="text-2xl font-bold">AKWAABA HOTEL</h1>
-                <button id="collapse-btn" class="md:hidden">
-                    <i class="fas fa-bars"></i>
-                </button>
+                <h1>AKWAABA HOTEL</h1>
             </div>
             <nav>
                 <ul>
-                    <li class="mb-4">
-                        <a href="dashboard.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-tachometer-alt mr-3"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="reservations.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-calendar-check mr-3"></i>
-                            <span>Reservations</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="guest.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-users mr-3"></i>
-                            <span>Guests</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="#rooms" class="flex items-center py-2 px-4 bg-blue-900 rounded">
-                            <i class="fas fa-door-closed mr-3"></i>
-                            <span>Rooms</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="services.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-concierge-bell mr-3"></i>
-                            <span>Services</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="billing.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-file-invoice-dollar mr-3"></i>
-                            <span>Billing</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="reports.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-chart-line mr-3"></i>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="settings.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-cog mr-3"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
+                    <li><a href="#dashboard"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li><a href="#reservations"><i class="fas fa-calendar-check"></i><span>Reservations</span></a></li>
+                    <li><a href="#guests"><i class="fas fa-users"></i><span>Guests</span></a></li>
+                    <li><a href="#rooms" class="active"><i class="fas fa-door-closed"></i><span>Rooms</span></a></li>
+                    <li><a href="#services"><i class="fas fa-concierge-bell"></i><span>Services</span></a></li>
+                    <li><a href="#billing"><i class="fas fa-file-invoice-dollar"></i><span>Billing</span></a></li>
+                    <li><a href="#reports"><i class="fas fa-chart-line"></i><span>Reports</span></a></li>
+                    <li><a href="#settings"><i class="fas fa-cog"></i><span>Settings</span></a></li>
                 </ul>
             </nav>
-            <div class="mt-auto">
-                <div class="flex items-center py-2 px-4">
-                    <img src="images.png" alt="Admin" class="rounded-full h-10 w-10">
-                    <div class="ml-3">
-                        <p class="font-medium">Antepim Awuah Vincent</p>
-                        <p class="text-sm text-blue-200">Admin</p>
-                    </div>
+            <div class="admin-profile">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjAiIGN5PSIyMCIgcj0iMjAiIGZpbGw9IiM5Q0EzQUYiLz4KPHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSI+CjxjaXJjbGUgY3g9IjIwIiBjeT0iMTYiIHI9IjYiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xMCAzMmMwLTUuNTIzIDQuNDc3LTEwIDEwLTEwczEwIDQuNDc3IDEwIDEwIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9Im5vbmUiLz4KPHN2Zz4K" alt="Admin">
+                <div>
+                    <p>Antepim Awuah Vincent</p>
+                    <p>Admin</p>
                 </div>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div id="main-content" class="main-content flex-1 overflow-x-hidden overflow-y-auto">
-            <!-- Top Navigation -->
-            <header class="bg-white shadow-sm">
-                <div class="flex items-center justify-between py-4 px-6">
-                    <div class="flex items-center">
-                        <button id="mobile-toggle" class="md:hidden mr-6">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <h2 class="text-xl font-semibold">Rooms Management</h2>
+        <div class="main-content">
+            <!-- Header -->
+            <header>
+                <div class="flex items-center">
+                    <button id="mobile-toggle" class="md:hidden mr-6" style="display: none;">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>Rooms Management</h2>
+                </div>
+                <div class="header-controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Search rooms...">
+                        <i class="fas fa-search"></i>
                     </div>
-                    <div class="flex items-center">
-                        <div class="relative mr-4">
-                            <input type="text" id="searchInput" placeholder="Search rooms..." class="py-2 px-4 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
-                        </div>
-                        <div class="relative mr-4">
-                            <button class="relative">
-                                <i class="fas fa-bell text-gray-500 text-xl"></i>
-                                <span class="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 text-xs text-white flex items-center justify-center">3</span>
-                            </button>
-                        </div>
-                    </div>
+                    <button class="notification-btn">
+                        <i class="fas fa-bell" style="font-size: 1.25rem; color: #6b7280;"></i>
+                        <span class="badge">3</span>
+                    </button>
                 </div>
             </header>
 
-            <!-- Rooms Content -->
-            <main class="p-6">
-                <!-- Room Statistics -->
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="bg-green-100 p-3 rounded-full">
-                                <i class="fas fa-door-open text-green-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-gray-500 text-sm">Available Rooms</h3>
-                                <p class="text-2xl font-semibold">24</p>
-                                <p class="text-green-500 text-sm">Out of 50 total</p>
-                            </div>
+            <!-- Main Content -->
+            <main>
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <i class="fas fa-door-open" style="font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Available Rooms</h3>
+                            <p class="stat-number" id="availableCount">24</p>
+                            <p class="stat-detail" style="color: #16a34a;">Out of 50 total</p>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="bg-red-100 p-3 rounded-full">
-                                <i class="fas fa-door-closed text-red-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-gray-500 text-sm">Occupied Rooms</h3>
-                                <p class="text-2xl font-semibold">18</p>
-                                <p class="text-red-500 text-sm">36% occupancy</p>
-                            </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red">
+                            <i class="fas fa-door-closed" style="font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Occupied Rooms</h3>
+                            <p class="stat-number" id="occupiedCount">18</p>
+                            <p class="stat-detail" style="color: #dc2626;">36% occupancy</p>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="bg-yellow-100 p-3 rounded-full">
-                                <i class="fas fa-broom text-yellow-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-gray-500 text-sm">Cleaning</h3>
-                                <p class="text-2xl font-semibold">5</p>
-                                <p class="text-yellow-500 text-sm">In progress</p>
-                            </div>
+                    <div class="stat-card">
+                        <div class="stat-icon yellow">
+                            <i class="fas fa-broom" style="font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Cleaning</h3>
+                            <p class="stat-number" id="cleaningCount">5</p>
+                            <p class="stat-detail" style="color: #d97706;">In progress</p>
                         </div>
                     </div>
-                    <div class="bg-white rounded-lg shadow-sm p-6">
-                        <div class="flex items-center">
-                            <div class="bg-purple-100 p-3 rounded-full">
-                                <i class="fas fa-tools text-purple-600 text-xl"></i>
-                            </div>
-                            <div class="ml-4">
-                                <h3 class="text-gray-500 text-sm">Maintenance</h3>
-                                <p class="text-2xl font-semibold">3</p>
-                                <p class="text-purple-500 text-sm">Under repair</p>
-                            </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <i class="fas fa-tools" style="font-size: 1.25rem;"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Maintenance</h3>
+                            <p class="stat-number" id="maintenanceCount">3</p>
+                            <p class="stat-detail" style="color: #9333ea;">Under repair</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Controls -->
-                <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <div class="flex flex-col md:flex-row justify-between items-center mb-4">
-                        <div class="mb-4 md:mb-0">
-                            <h3 class="font-semibold text-lg">Room Inventory</h3>
-                            <p class="text-gray-500 text-sm">Manage your hotel rooms and their availability</p>
+                <div class="controls-section">
+                    <div class="controls-header">
+                        <div>
+                            <h3>Room Inventory</h3>
+                            <p>Manage your hotel rooms and their availability</p>
                         </div>
-                        <button id="addRoomBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center">
-                            <i class="fas fa-plus mr-2"></i>
+                        <button id="addRoomBtn" class="add-room-btn">
+                            <i class="fas fa-plus"></i>
                             Add New Room
                         </button>
                     </div>
-                    <div class="flex flex-wrap gap-4 items-center">
-                        <div class="flex items-center">
-                            <label class="text-sm font-medium text-gray-700 mr-2">Filter by Floor:</label>
-                            <select id="floorFilter" class="border rounded-lg px-3 py-2 text-sm">
+                    <div class="filters">
+                        <div class="filter-group">
+                            <label>Filter by Floor:</label>
+                            <select id="floorFilter">
                                 <option value="">All Floors</option>
                                 <option value="1">Floor 1</option>
                                 <option value="2">Floor 2</option>
                                 <option value="3">Floor 3</option>
                             </select>
                         </div>
-                        <div class="flex items-center">
-                            <label class="text-sm font-medium text-gray-700 mr-2">Filter by Type:</label>
-                            <select id="typeFilter" class="border rounded-lg px-3 py-2 text-sm">
+                        <div class="filter-group">
+                            <label>Filter by Type:</label>
+                            <select id="typeFilter">
                                 <option value="">All Types</option>
                                 <option value="Standard">Standard</option>
                                 <option value="Deluxe">Deluxe</option>
                                 <option value="Suite">Suite</option>
                             </select>
                         </div>
-                        <div class="flex items-center">
-                            <label class="text-sm font-medium text-gray-700 mr-2">Filter by Status:</label>
-                            <select id="statusFilter" class="border rounded-lg px-3 py-2 text-sm">
+                        <div class="filter-group">
+                            <label>Filter by Status:</label>
+                            <select id="statusFilter">
                                 <option value="">All Status</option>
                                 <option value="Available">Available</option>
                                 <option value="Occupied">Occupied</option>
@@ -226,69 +725,65 @@
                 </div>
 
                 <!-- Rooms Grid -->
-                <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    <!-- Room Cards will be populated here -->
+                <div id="roomsGrid" class="rooms-grid">
+                    <!-- Room cards will be populated here -->
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Add/Edit Room Modal -->
-    <div id="roomModal" class="modal fixed inset-0 bg-black bg-opacity-50 items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-8 max-w-md w-full mx-4">
-            <div class="flex justify-between items-center mb-6">
-                <h3 id="modalTitle" class="text-xl font-semibold">Add New Room</h3>
-                <button id="closeModal" class="text-gray-400 hover:text-gray-600">
+    <!-- Modal -->
+    <div id="roomModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Add New Room</h3>
+                <button id="closeModal" class="modal-close">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
             <form id="roomForm">
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Room Number</label>
-                    <input type="text" id="roomNumber" class="w-full border rounded-lg px-3 py-2" required>
+                <div class="form-group">
+                    <label>Room Number</label>
+                    <input type="text" id="roomNumber" required>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
-                    <select id="roomType" class="w-full border rounded-lg px-3 py-2" required>
+                <div class="form-group">
+                    <label>Room Type</label>
+                    <select id="roomType" required>
                         <option value="">Select Type</option>
                         <option value="Standard">Standard</option>
                         <option value="Deluxe">Deluxe</option>
                         <option value="Suite">Suite</option>
                     </select>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Floor</label>
-                    <select id="roomFloor" class="w-full border rounded-lg px-3 py-2" required>
+                <div class="form-group">
+                    <label>Floor</label>
+                    <select id="roomFloor" required>
                         <option value="">Select Floor</option>
                         <option value="1">Floor 1</option>
                         <option value="2">Floor 2</option>
                         <option value="3">Floor 3</option>
                     </select>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Price per Night ($)</label>
-                    <input type="number" id="roomPrice" class="w-full border rounded-lg px-3 py-2" required>
+                <div class="form-group">
+                    <label>Price per Night ($)</label>
+                    <input type="number" id="roomPrice" required>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Capacity</label>
-                    <input type="number" id="roomCapacity" class="w-full border rounded-lg px-3 py-2" required>
+                <div class="form-group">
+                    <label>Capacity</label>
+                    <input type="number" id="roomCapacity" required>
                 </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                    <select id="roomStatus" class="w-full border rounded-lg px-3 py-2" required>
+                <div class="form-group">
+                    <label>Status</label>
+                    <select id="roomStatus" required>
                         <option value="Available">Available</option>
                         <option value="Occupied">Occupied</option>
                         <option value="Cleaning">Cleaning</option>
                         <option value="Maintenance">Maintenance</option>
                     </select>
                 </div>
-                <div class="flex gap-4">
-                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg">
-                        Save Room
-                    </button>
-                    <button type="button" id="cancelModal" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-700 py-2 px-4 rounded-lg">
-                        Cancel
-                    </button>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Save Room</button>
+                    <button type="button" id="cancelModal" class="btn-secondary">Cancel</button>
                 </div>
             </form>
         </div>
@@ -315,17 +810,32 @@
 
         // Status color mapping
         const statusColors = {
-            'Available': 'bg-green-100 text-green-800',
-            'Occupied': 'bg-red-100 text-red-800',
-            'Cleaning': 'bg-yellow-100 text-yellow-800',
-            'Maintenance': 'bg-purple-100 text-purple-800'
+            'Available': 'status-available',
+            'Occupied': 'status-occupied',
+            'Cleaning': 'status-cleaning',
+            'Maintenance': 'status-maintenance'
         };
 
         // Mobile sidebar toggle
-        document.getElementById('mobile-toggle').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('-translate-x-full');
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        // Show mobile toggle on small screens
+        function checkScreenSize() {
+            if (window.innerWidth <= 768) {
+                mobileToggle.style.display = 'block';
+            } else {
+                mobileToggle.style.display = 'none';
+                sidebar.classList.remove('active');
+            }
+        }
+
+        mobileToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
         });
+
+        window.addEventListener('resize', checkScreenSize);
+        checkScreenSize();
 
         // Render rooms
         function renderRooms(roomsToRender = rooms) {
@@ -334,38 +844,38 @@
 
             roomsToRender.forEach(room => {
                 const roomCard = document.createElement('div');
-                roomCard.className = 'room-card bg-white rounded-lg shadow-sm p-6 border-l-4 border-blue-500';
+                roomCard.className = 'room-card';
                 
                 roomCard.innerHTML = `
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h3 class="font-semibold text-lg">Room ${room.number}</h3>
-                            <p class="text-gray-500 text-sm">${room.type} • Floor ${room.floor}</p>
+                    <div class="room-header">
+                        <div class="room-info">
+                            <h3>Room ${room.number}</h3>
+                            <p>${room.type} • Floor ${room.floor}</p>
                         </div>
-                        <div class="flex gap-2">
-                            <button onclick="editRoom(${room.id})" class="text-blue-600 hover:text-blue-800 p-1">
+                        <div class="room-actions">
+                            <button onclick="editRoom(${room.id})" class="edit-btn">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button onclick="deleteRoom(${room.id})" class="text-red-600 hover:text-red-800 p-1">
+                            <button onclick="deleteRoom(${room.id})" class="delete-btn">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="mb-4">
-                        <span class="px-2 py-1 text-xs rounded-full ${statusColors[room.status]}">${room.status}</span>
+                    <div class="room-status">
+                        <span class="status-badge ${statusColors[room.status]}">${room.status}</span>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div class="room-details">
                         <div>
-                            <p class="text-gray-500">Price/Night</p>
-                            <p class="font-semibold">$${room.price}</p>
+                            <p>Price/Night</p>
+                            <p>${room.price}</p>
                         </div>
                         <div>
-                            <p class="text-gray-500">Capacity</p>
-                            <p class="font-semibold">${room.capacity} ${room.capacity === 1 ? 'person' : 'people'}</p>
+                            <p>Capacity</p>
+                            <p>${room.capacity} ${room.capacity === 1 ? 'person' : 'people'}</p>
                         </div>
                     </div>
-                    <div class="mt-4 pt-4 border-t">
-                        <button onclick="changeRoomStatus(${room.id})" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded text-sm">
+                    <div class="room-footer">
+                        <button onclick="changeRoomStatus(${room.id})" class="change-status-btn">
                             Change Status
                         </button>
                     </div>
@@ -423,6 +933,13 @@
         document.getElementById('closeModal').addEventListener('click', closeModal);
         document.getElementById('cancelModal').addEventListener('click', closeModal);
 
+        // Close modal when clicking outside
+        document.getElementById('roomModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
         // Edit room
         function editRoom(id) {
             const room = rooms.find(r => r.id === id);
@@ -474,6 +991,13 @@
                 status: document.getElementById('roomStatus').value
             };
 
+            // Check if room number already exists (for new rooms or different room when editing)
+            const existingRoom = rooms.find(r => r.number === roomData.number && r.id !== currentEditId);
+            if (existingRoom) {
+                alert('Room number already exists! Please choose a different number.');
+                return;
+            }
+
             if (currentEditId) {
                 // Edit existing room
                 const roomIndex = rooms.findIndex(r => r.id === currentEditId);
@@ -500,13 +1024,77 @@
             const occupied = rooms.filter(r => r.status === 'Occupied').length;
             const cleaning = rooms.filter(r => r.status === 'Cleaning').length;
             const maintenance = rooms.filter(r => r.status === 'Maintenance').length;
+            const total = rooms.length;
 
-            // Update the stats cards (you can customize this based on your needs)
-            console.log(`Stats - Available: ${available}, Occupied: ${occupied}, Cleaning: ${cleaning}, Maintenance: ${maintenance}`);
+            // Update the stats display
+            document.getElementById('availableCount').textContent = available;
+            document.getElementById('occupiedCount').textContent = occupied;
+            document.getElementById('cleaningCount').textContent = cleaning;
+            document.getElementById('maintenanceCount').textContent = maintenance;
+
+            // Update occupancy percentage
+            const occupancyPercentage = total > 0 ? Math.round((occupied / total) * 100) : 0;
+            const occupancyElement = document.querySelector('#occupiedCount').parentElement.querySelector('.stat-detail');
+            occupancyElement.textContent = `${occupancyPercentage}% occupancy`;
         }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Close modal with Escape key
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+            
+            // Open add room modal with Ctrl+N
+            if (e.ctrlKey && e.key === 'n') {
+                e.preventDefault();
+                openModal('Add New Room');
+            }
+        });
 
         // Initial render
         renderRooms();
+        updateStats();
+
+        // Auto-save functionality (optional - saves to localStorage if available)
+        function saveToStorage() {
+            try {
+                // Note: localStorage is not available in Claude artifacts
+                // This is just for demonstration of how it would work
+                if (typeof Storage !== 'undefined') {
+                    localStorage.setItem('hotelRooms', JSON.stringify(rooms));
+                }
+            } catch (e) {
+                console.log('Storage not available');
+            }
+        }
+
+        function loadFromStorage() {
+            try {
+                if (typeof Storage !== 'undefined') {
+                    const savedRooms = localStorage.getItem('hotelRooms');
+                    if (savedRooms) {
+                        rooms = JSON.parse(savedRooms);
+                        renderRooms();
+                        updateStats();
+                    }
+                }
+            } catch (e) {
+                console.log('Storage not available');
+            }
+        }
+
+        // Load saved data on page load
+        loadFromStorage();
+
+        // Save data whenever rooms are modified
+        const originalRenderRooms = renderRooms;
+        renderRooms = function(roomsToRender) {
+            originalRenderRooms(roomsToRender);
+            if (!roomsToRender || roomsToRender === rooms) {
+                saveToStorage();
+            }
+        };
     </script>
 </body>
 </html>

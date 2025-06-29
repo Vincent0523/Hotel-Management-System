@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Management System - Reports</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #1e40af;
+            color: white;
+            width: 256px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #1d4ed8;
+        }
+
+        .sidebar nav a.active {
+            background-color: #1e3a8a;
+        }
+
+        .sidebar nav a i {
+            margin-right: 0.75rem;
+            width: 16px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-footer img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+
+        .sidebar-footer .user-info h4 {
+            font-weight: 500;
+        }
+
+        .sidebar-footer .user-info p {
+            font-size: 0.875rem;
+            color: #bfdbfe;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.5rem 1rem;
+            padding-right: 2.5rem;
+            border-radius: 9999px;
+            background-color: #f3f4f6;
+            border: none;
+            outline: none;
+            width: 200px;
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            color: #9ca3af;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .notification-btn i {
+            font-size: 1.25rem;
+            color: #6b7280;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Main Content Area */
+        .content {
+            padding: 1.5rem;
+        }
+
+        /* Reports Header */
+        .reports-header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .reports-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reports-title h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .date-range-picker {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .date-range-picker input {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .date-range-picker button {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .date-range-picker button:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Report Cards Grid */
+        .report-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .report-card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .report-icon {
+            padding: 0.75rem;
+            border-radius: 50%;
+            margin-right: 1rem;
+        }
+
+        .report-icon.blue {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+
+        .report-icon.green {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+
+        .report-icon.purple {
+            background-color: #f3e8ff;
+            color: #9333ea;
+        }
+
+        .report-icon.orange {
+            background-color: #fed7aa;
+            color: #ea580c;
+        }
+
+        .report-card h3 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .report-card p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-header h3 {
+            font-weight: 600;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chart-controls button {
+            background: none;
+            border: 1px solid #d1d5db;
+            color: #6b7280;
+            cursor: pointer;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+        }
+
+        .chart-controls button.active {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .chart-controls button:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Tables Section */
+        .tables-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .table-card {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .table-header h3 {
+            font-weight: 600;
+        }
+
+        .export-btn {
+            background-color: #10b981;
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-btn:hover {
+            background-color: #059669;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f9fafb;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-high {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-medium {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-low {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -256px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .mobile-toggle {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 1.25rem;
+                cursor: pointer;
+                margin-right: 1rem;
+            }
+
+            .report-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tables-section {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box input {
+                width: 150px;
+            }
+
+            .date-range-picker {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+
+            .reports-title {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-toggle {
+                display: none;
+            }
+        }
+
+        /* Overlay for mobile sidebar */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.show {
+            display: block;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            border: 2px solid #f3f4f6;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1> AKWAABA HOTEL</h1>
+            </div>
+            
+            <nav>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="reservations.html"><i class="fas fa-calendar-check"></i> Reservations</a></li>
+                    <li><a href="guest.html"><i class="fas fa-users"></i> Guests</a></li>
+                    <li><a href="rooms.html"><i class="fas fa-bed"></i> Rooms</a></li>
+                    <li><a href="services.html"><i class="fas fa-concierge-bell"></i> Services</a></li>
+                    <li><a href="reports.html" class="active"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                    <li><a href="billing.htmL"><i class="fas fa-money-bill-wave"></i> Billing</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <img src="images.png" alt="User Avatar">
+                <div class="user-info">
+                    <h4>MR ANTEPIM</h4>
+                    <p>Hotel Manager</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>Reports</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search reports...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="content">
+                <!-- Reports Header -->
+                <div class="reports-header">
+                    <div class="reports-title">
+                        <h2>Analytics & Reports</h2>
+                        <div class="date-range-picker">
+                            <input type="date" id="startDate" value="2024-01-01">
+                            <span>to</span>
+                            <input type="date" id="endDate" value="2024-12-31">
+                            <button onclick="updateReports()">
+                                <i class="fas fa-sync-alt"></i> Update
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Cards -->
+                <div class="report-cards">
+                    <div class="report-card" onclick="showReport('occupancy')">
+                        <div class="report-card-header">
+                            <div class="report-icon blue">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <h3>Occupancy Report</h3>
+                                <p>Room occupancy rates and trends over time</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="showReport('revenue')">
+                        <div class="report-card-header">
+                            <div class="report-icon green">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div>
+                                <h3>Revenue Report</h3>
+                                <p>Financial performance and revenue analytics</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="showReport('guest')">
+                        <div class="report-card-header">
+                            <div class="report-icon purple">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div>
+                                <h3>Guest Analytics</h3>
+                                <p>Guest demographics and satisfaction metrics</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-card" onclick="showReport('operational')">
+                        <div class="report-card-header">
+                            <div class="report-icon orange">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <div>
+                                <h3>Operational Report</h3>
+                                <p>Staff performance and operational efficiency</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="charts-grid">
+                        <!-- Revenue Chart -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Revenue Trends</h3>
+                                <div class="chart-controls">
+                                    <button class="active" onclick="updateChart('revenue', 'daily')">Daily</button>
+                                    <button onclick="updateChart('revenue', 'weekly')">Weekly</button>
+                                    <button onclick="updateChart('revenue', 'monthly')">Monthly</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="revenueChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Occupancy Chart -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Occupancy Rate</h3>
+                                <div class="chart-controls">
+                                    <button class="active" onclick="updateChart('occupancy', 'daily')">Daily</button>
+                                    <button onclick="updateChart('occupancy', 'weekly')">Weekly</button>
+                                    <button onclick="updateChart('occupancy', 'monthly')">Monthly</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="occupancyChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Room Type Distribution -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Room Type Performance</h3>
+                                <div class="chart-controls">
+                                    <button class="active" onclick="updateChart('roomType', 'revenue')">Revenue</button>
+                                    <button onclick="updateChart('roomType', 'bookings')">Bookings</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="roomTypeChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Guest Satisfaction -->
+                        <div class="chart-card">
+                            <div class="chart-header">
+                                <h3>Guest Satisfaction</h3>
+                                <div class="chart-controls">
+                                    <button class="active" onclick="updateChart('satisfaction', 'monthly')">Monthly</button>
+                                    <button onclick="updateChart('satisfaction', 'quarterly')">Quarterly</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="satisfactionChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables Section -->
+                <div class="tables-section">
+                    <!-- Top Performing Rooms -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3>Top Performing Rooms</h3>
+                            <button class="export-btn" onclick="exportTable('rooms')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Room</th>
+                                    <th>Type</th>
+                                    <th>Revenue</th>
+                                    <th>Occupancy</th>
+                                    <th>Rating</th>
+                                    <th>Performance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Presidential Suite 501</td>
+                                    <td>Suite</td>
+                                    <td>$45,600</td>
+                                    <td>87%</td>
+                                    <td>4.9</td>
+                                    <td><span class="status-badge status-high">Excellent</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Deluxe Room 302</td>
+                                    <td>Deluxe</td>
+                                    <td>$32,400</td>
+                                    <td>92%</td>
+                                    <td>4.7</td>
+                                    <td><span class="status-badge status-high">Excellent</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Standard Room 205</td>
+                                    <td>Standard</td>
+                                    <td>$28,800</td>
+                                    <td>89%</td>
+                                    <td>4.5</td>
+                                    <td><span class="status-badge status-medium">Good</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Ocean View 402</td>
+                                    <td>Premium</td>
+                                    <td>$35,200</td>
+                                    <td>85%</td>
+                                    <td>4.6</td>
+                                    <td><span class="status-badge status-high">Excellent</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Garden View 103</td>
+                                    <td>Standard</td>
+                                    <td>$18,600</td>
+                                    <td>76%</td>
+                                    <td>4.2</td>
+                                    <td><span class="status-badge status-medium">Good</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Revenue by Source -->
+                    <div class="table-card">
+                        <div class="table-header">
+                            <h3>Revenue by Booking Source</h3>
+                            <button class="export-btn" onclick="exportTable('sources')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Bookings</th>
+                                    <th>Revenue</th>
+                                    <th>Commission</th>
+                                    <th>Net Revenue</th>
+                                    <th>Growth</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Direct Booking</td>
+                                    <td>1,247</td>
+                                    <td>$284,600</td>
+                                    <td>$0</td>
+                                    <td>$284,600</td>
+                                    <td><span class="status-badge status-high">+12%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Booking.com</td>
+                                    <td>856</td>
+                                    <td>$198,400</td>
+                                    <td>$29,760</td>
+                                    <td>$168,640</td>
+                                    <td><span class="status-badge status-medium">+5%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Expedia</td>
+                                    <td>623</td>
+                                    <td>$142,800</td>
+                                    <td>$24,276</td>
+                                    <td>$118,524</td>
+                                    <td><span class="status-badge status-medium">+8%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Airbnb</td>
+                                    <td>445</td>
+                                    <td>$98,600</td>
+                                    <td>$11,832</td>
+                                    <td>$86,768</td>
+                                    <td><span class="status-badge status-low">-2%</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Travel Agent</td>
+                                    <td>234</td>
+                                    <td>$56,400</td>
+                                    <td>$8,460</td>
+                                    <td>$47,940</td>
+                                    <td><span class="status-badge status-medium">+3%</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <script>
+        // Chart instances
+        let charts = {};
+
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeCharts();
+        });
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('show');
+        }
+
+        function initializeCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            charts.revenue = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Revenue',
+                        data: [45000, 52000, 48000, 61000, 55000, 67000, 73000, 69000, 58000, 62000, 57000, 71000],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Occupancy Chart
+            const occupancyCtx = document.getElementById('occupancyChart').getContext('2d');
+            charts.occupancy = new Chart(occupancyCtx, {
+                type: 'bar',
+                data: {
+                       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Occupancy %',
+                        data: [72, 78, 74, 81, 77, 85, 88, 86, 79, 80, 75, 82],
+                        backgroundColor: '#16a34a',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function (value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Room Type Chart
+            const roomTypeCtx = document.getElementById('roomTypeChart').getContext('2d');
+            charts.roomType = new Chart(roomTypeCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Suite', 'Deluxe', 'Standard', 'Premium'],
+                    datasets: [{
+                        data: [24000, 18000, 15000, 20000],
+                        backgroundColor: ['#9333ea', '#2563eb', '#f59e0b', '#10b981']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Satisfaction Chart
+            const satisfactionCtx = document.getElementById('satisfactionChart').getContext('2d');
+            charts.satisfaction = new Chart(satisfactionCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        label: 'Satisfaction',
+                        data: [4.2, 4.4, 4.6, 4.5],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateChart(chartName, type) {
+            // Just log for now. Extend to dynamically update data later.
+            console.log(`Updating ${chartName} chart to view: ${type}`);
+            // You could use this to change chart data dynamically later.
+        }
+
+        function updateReports() {
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            alert(`Filtering reports from ${start} to ${end}`);
+        }
+
+        function showReport(reportType) {
+            alert(`Navigating to detailed view of: ${reportType}`);
+            // In a real app, redirect or dynamically load data here.
+        }
+
+        function exportTable(tableId) {
+            alert(`Exporting table: ${tableId}`);
+            // Implement CSV export or PDF download here if needed.
+        }
+    </script>
+</body>
+</html>

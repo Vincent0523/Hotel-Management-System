@@ -3,528 +3,1173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HotelEase - Reservations</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.9/flatpickr.min.js"></script>
+    <title>Reservations - Hotel Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .sidebar {
-            transition: all 0.3s;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background-color: #1e40af;
+            color: white;
+            width: 256px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+        }
+
+        .sidebar nav li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: white;
+            text-decoration: none;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+        }
+
+        .sidebar nav a:hover {
+            background-color: #1d4ed8;
+        }
+
+        .sidebar nav a.active {
+            background-color: #1e3a8a;
+        }
+
+        .sidebar nav a i {
+            margin-right: 0.75rem;
+            width: 16px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+        }
+
+        .sidebar-footer img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+
+        .sidebar-footer .user-info h4 {
+            font-weight: 500;
+        }
+
+        .sidebar-footer .user-info p {
+            font-size: 0.875rem;
+            color: #bfdbfe;
+        }
+
+        /* Main Content */
         .main-content {
-            transition: all 0.3s;
+            flex: 1;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* Header */
+        .header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-left h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            padding: 0.5rem 1rem;
+            padding-right: 2.5rem;
+            border-radius: 9999px;
+            background-color: #f3f4f6;
+            border: none;
+            outline: none;
+            width: 200px;
+        }
+
+        .search-box input:focus {
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 12px;
+            top: 12px;
+            color: #9ca3af;
+        }
+
+        .notification-btn {
+            position: relative;
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .notification-btn i {
+            font-size: 1.25rem;
+            color: #6b7280;
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            margin-right: 1rem;
+        }
+
+        /* Content */
+        .content {
+            padding: 1.5rem;
+        }
+
+        /* Page Actions */
+        .page-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filters-section {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .filter-group label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: white;
+            font-size: 0.875rem;
+        }
+
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        /* Stats Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        /* Reservations Table */
+        .table-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h3 {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f9fafb;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tbody tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .guest-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .guest-info img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+        }
+
+        .guest-details h4 {
+            font-weight: 500;
+            margin-bottom: 0.125rem;
+        }
+
+        .guest-details p {
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .status-confirmed {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-cancelled {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-checked-in {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-checked-out {
+            background-color: #f3e8ff;
+            color: #7c3aed;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 0.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 1px #3b82f6;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            background: white;
+            color: #374151;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pagination button:hover:not(:disabled) {
+            background-color: #f3f4f6;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination button.active {
+            background-color: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -256px;
+                top: 0;
+                height: 100vh;
+                z-index: 1000;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .filters-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box input {
+                width: 150px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 1rem;
+                width: calc(100% - 2rem);
+            }
+
+            .modal-footer {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-toggle {
+                display: none;
+            }
+        }
+
+        /* Overlay for mobile sidebar */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.show {
+            display: block;
         }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div class="flex h-screen">
+<body>
+    <div class="container">
         <!-- Sidebar -->
-        <div id="sidebar" class="sidebar bg-blue-800 text-white w-64 py-4 px-6 flex flex-col">
-            <div class="flex items-center justify-between mb-8">
-                <h1 class="text-2xl font-bold">AKWAABA HOTEL</h1>
-                <button id="collapse-btn" class="md:hidden">
-                    <i class="fas fa-bars"></i>
-                </button>
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1> AKWAABA HOTEL</h1>
             </div>
+            
             <nav>
                 <ul>
-                    <li class="mb-4">
-                        <a href="dashboard.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-tachometer-alt mr-3"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="reservations.html" class="flex items-center py-2 px-4 bg-blue-900 rounded">
-                            <i class="fas fa-calendar-check mr-3"></i>
-                            <span>Reservations</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="guest.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-users mr-3"></i>
-                            <span>Guests</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="rooms.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-door-closed mr-3"></i>
-                            <span>Rooms</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="services.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-concierge-bell mr-3"></i>
-                            <span>Services</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="billing.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-file-invoice-dollar mr-3"></i>
-                            <span>Billing</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="reports.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-chart-line mr-3"></i>
-                            <span>Reports</span>
-                        </a>
-                    </li>
-                    <li class="mb-4">
-                        <a href="settings.html" class="flex items-center py-2 px-4 hover:bg-blue-700 rounded">
-                            <i class="fas fa-cog mr-3"></i>
-                            <span>Settings</span>
-                        </a>
-                    </li>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="reservations.html" class="active"><i class="fas fa-calendar-check"></i> Reservations</a></li>
+                    <li><a href="guest.html"><i class="fas fa-users"></i> Guests</a></li>
+                    <li><a href="rooms.html"><i class="fas fa-bed"></i> Rooms</a></li>
+                    <li><a href="services.html"><i class="fas fa-concierge-bell"></i> Services</a></li>
+                    <li><a href="reports.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+                    <li><a href="billing.html"><i class="fas fa-money-bill-wave"></i> Billing</a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
                 </ul>
             </nav>
-            <div class="mt-auto">
-                <div class="flex items-center py-2 px-4">
-                    <img src="images.png" alt="Admin" class="rounded-full h-10 w-10">
-                    <div class="ml-3">
-                        <p class="font-medium">Antepim Awuah Vincent</p>
-                        <p class="text-sm text-blue-200">Admin</p>
-                    </div>
+            
+            <div class="sidebar-footer">
+                <img src="images.png" alt="User Avatar">
+                <div class="user-info">
+                    <h4>MR ANTEPIM</h4>
+                    <p>Hotel Manager</p>
                 </div>
             </div>
-        </div>
+        </aside>
 
         <!-- Main Content -->
-        <div id="main-content" class="main-content flex-1 overflow-x-hidden overflow-y-auto">
-            <!-- Top Navigation -->
-            <header class="bg-white shadow-sm">
-                <div class="flex items-center justify-between py-4 px-6">
-                    <div class="flex items-center">
-                        <button id="mobile-toggle" class="md:hidden mr-6">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <h2 class="text-xl font-semibold">Reservations</h2>
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2>Reservations</h2>
+                </div>
+                
+                <div class="header-right">
+                    <div class="search-box">
+                        <input type="text" placeholder="Search reservations..." id="searchInput">
+                        <i class="fas fa-search"></i>
                     </div>
-                    <div class="flex items-center">
-                        <div class="relative mr-4">
-                            <input type="text" placeholder="Search reservations..." class="py-2 px-4 rounded-full bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
-                        </div>
-                        <div class="relative mr-4">
-                            <button class="relative">
-                                <i class="fas fa-bell text-gray-500 text-xl"></i>
-                                <span class="absolute -top-1 -right-1 bg-red-500 rounded-full w-4 h-4 text-xs text-white flex items-center justify-center">3</span>
-                            </button>
-                        </div>
-                    </div>
+                    
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge">3</span>
+                    </button>
                 </div>
             </header>
 
-            <!-- Reservations Content -->
-            <main class="p-6">
-                <!-- Quick Reservation Actions -->
-                <div class="mb-6">
-                    <div class="flex flex-col md:flex-row md:justify-between md:items-center">
-                        <div class="mb-4 md:mb-0">
-                            <h3 class="text-lg font-semibold mb-2">Reservation Management</h3>
-                            <p class="text-gray-600">Manage reservations and bookings</p>
-                        </div>
-                        <div class="flex space-x-3">
-                            <button class="flex items-center bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                                <i class="fas fa-plus mr-2"></i>
-                                <span>New Reservation</span>
-                            </button>
-                            <button class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded">
-                                <i class="fas fa-filter mr-2"></i>
-                                <span>Filter</span>
-                            </button>
-                            <button class="flex items-center bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded">
-                                <i class="fas fa-download mr-2"></i>
-                                <span>Export</span>
-                            </button>
-                        </div>
+            <!-- Content -->
+            <div class="content">
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalReservations">24</div>
+                        <div class="stat-label">Total Reservations</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="confirmedReservations">18</div>
+                        <div class="stat-label">Confirmed</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="pendingReservations">4</div>
+                        <div class="stat-label">Pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="todayCheckins">6</div>
+                        <div class="stat-label">Today's Check-ins</div>
                     </div>
                 </div>
 
-                <!-- Reservation Filters -->
-                <div class="bg-white p-6 rounded-lg shadow-sm mb-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                            <div class="relative">
-                                <input type="text" id="date-range" class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Select date range">
-                                <i class="fas fa-calendar absolute right-3 top-3 text-gray-400"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Reservation Status</label>
-                            <select class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <!-- Page Header with Filters -->
+                <div class="page-header">
+                    <div class="filters-section">
+                        <div class="filter-group">
+                            <label>Status</label>
+                            <select id="statusFilter">
                                 <option value="">All Statuses</option>
                                 <option value="confirmed">Confirmed</option>
                                 <option value="pending">Pending</option>
+                                <option value="cancelled">Cancelled</option>
                                 <option value="checked-in">Checked In</option>
                                 <option value="checked-out">Checked Out</option>
-                                <option value="cancelled">Cancelled</option>
-                                <option value="no-show">No Show</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Room Type</label>
-                            <select class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">All Room Types</option>
-                                <option value="standard">Standard</option>
-                                <option value="deluxe">Deluxe</option>
-                                <option value="suite">Suite</option>
-                                <option value="executive">Executive Suite</option>
-                                <option value="family">Family Room</option>
-                            </select>
+                        <div class="filter-group">
+                            <label>Date Range</label>
+                            <input type="date" id="dateFromFilter">
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Payment Status</label>
-                            <select class="w-full py-2 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">All Payment Statuses</option>
-                                <option value="paid">Paid</option>
-                                <option value="pending">Pending</option>
-                                <option value="partial">Partially Paid</option>
-                                <option value="refunded">Refunded</option>
-                            </select>
+                        <div class="filter-group">
+                            <label>&nbsp;</label>
+                            <input type="date" id="dateToFilter">
+                        </div>
+                        <div class="filter-group">
+                            <label>&nbsp;</label>
+                            <button class="btn btn-secondary btn-sm" onclick="clearFilters()">
+                                <i class="fas fa-times"></i> Clear
+                            </button>
                         </div>
                     </div>
-                    <div class="mt-4 flex justify-end">
-                        <button class="bg-gray-200 hover:bg-gray-300 text-gray-700 py-2 px-4 rounded mr-3">
-                            Reset
-                        </button>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                            Apply Filters
-                        </button>
-                    </div>
+                    <button class="btn btn-primary" onclick="openModal()">
+                        <i class="fas fa-plus"></i> New Reservation
+                    </button>
                 </div>
 
                 <!-- Reservations Table -->
-                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full">
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>All Reservations</h3>
+                        <button class="btn btn-secondary btn-sm" onclick="exportReservations()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                    
+                    <div class="table-wrapper">
+                        <table>
                             <thead>
-                                <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase border-b">
-                                    <th class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
-                                            <span>Booking ID</span>
-                                        </div>
-                                    </th>
-                                    <th class="px-4 py-3">Guest</th>
-                                    <th class="px-4 py-3">Room</th>
-                                    <th class="px-4 py-3">Check In/Out</th>
-                                    <th class="px-4 py-3">Amount</th>
-                                    <th class="px-4 py-3">Status</th>
-                                    <th class="px-4 py-3">Payment</th>
-                                    <th class="px-4 py-3">Action</th>
+                                <tr>
+                                    <th>Reservation ID</th>
+                                    <th>Guest</th>
+                                    <th>Room</th>
+                                    <th>Check-in</th>
+                                    <th>Check-out</th>
+                                    <th>Nights</th>
+                                    <th>Status</th>
+                                    <th>Total</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
-                                            <span class="font-medium">#BK10025</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <img src="images.png" alt="Guest" class="h-8 w-8 rounded-full">
-                                            <div class="ml-3">
-                                                <p class="font-medium">Emma Wilson</p>
-                                                <p class="text-xs text-gray-500">emma@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>Suite 201</p>
-                                            <p class="text-xs text-gray-500">1 King Bed</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>May 21 - May 24, 2025</p>
-                                            <p class="text-xs text-gray-500">3 Nights</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>$640.00</p>
-                                            <p class="text-xs text-gray-500">$213.33/night</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Confirmed</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center space-x-2">
-                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-600 hover:text-red-800" title="Cancel">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                            <button class="text-gray-600 hover:text-gray-800" title="More">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
-                                            <span class="font-medium">#BK10024</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <img src="images.png" alt="Guest" class="h-8 w-8 rounded-full">
-                                            <div class="ml-3">
-                                                <p class="font-medium">Michael Johnson</p>
-                                                <p class="text-xs text-gray-500">michael@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>Deluxe 105</p>
-                                            <p class="text-xs text-gray-500">2 Queen Beds</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>May 22 - May 26, 2025</p>
-                                            <p class="text-xs text-gray-500">4 Nights</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>$720.00</p>
-                                            <p class="text-xs text-gray-500">$180.00/night</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-800 rounded-full">Pending</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center space-x-2">
-                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-600 hover:text-red-800" title="Cancel">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                            <button class="text-gray-600 hover:text-gray-800" title="More">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
-                                            <span class="font-medium">#BK10023</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <img src="images.png" alt="Guest" class="h-8 w-8 rounded-full">
-                                            <div class="ml-3">
-                                                <p class="font-medium">Sarah Adams</p>
-                                                <p class="text-xs text-gray-500">sarah@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>Standard 304</p>
-                                            <p class="text-xs text-gray-500">1 Queen Bed</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>May 23 - May 25, 2025</p>
-                                            <p class="text-xs text-gray-500">2 Nights</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>$320.00</p>
-                                            <p class="text-xs text-gray-500">$160.00/night</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded-full">Checked In</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center space-x-2">
-                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-red-600 hover:text-red-800" title="Cancel">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                            <button class="text-gray-600 hover:text-gray-800" title="More">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
-                                            <span class="font-medium">#BK10022</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <img src="images.png" alt="Guest" class="h-8 w-8 rounded-full">
-                                            <div class="ml-3">
-                                                <p class="font-medium">David Miller</p>
-                                                <p class="text-xs text-gray-500">david@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>Suite 205</p>
-                                            <p class="text-xs text-gray-500">1 King Bed</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>May 24 - May 28, 2025</p>
-                                            <p class="text-xs text-gray-500">4 Nights</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>$940.00</p>
-                                            <p class="text-xs text-gray-500">$235.00/night</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-red-100 text-red-800 rounded-full">Cancelled</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded-full">Refunded</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center space-x-2">
-                                            <button class="text-blue-600 hover:text-blue-800" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="text-green-600 hover:text-green-800" title="Restore">
-                                                <i class="fas fa-redo"></i>
-                                            </button>
-                                            <button class="text-gray-600 hover:text-gray-800" title="More">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr class="border-b hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" class="mr-2 focus:ring-2 focus:ring-blue-500">
-                                            <span class="font-medium">#BK10021</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center">
-                                            <img src="images.png" alt="Guest" class="h-8 w-8 rounded-full">
-                                            <div class="ml-3">
-                                                <p class="font-medium">Jennifer Lopez</p>
-                                                <p class="text-xs text-gray-500">jennifer@example.com</p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>Deluxe 108</p>
-                                            <p class="text-xs text-gray-500">2 Queen Beds</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>May 20 - May 22, 2025</p>
-                                            <p class="text-xs text-gray-500">2 Nights</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div>
-                                            <p>$360.00</p>
-                                            <p class="text-xs text-gray-500">$180.00/night</p>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-gray-100 text-gray-800 rounded-full">Checked Out</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">Paid</span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center space-x-2">
-                                            <button class="text-blue-600 hover:text-blue-800" title="View">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="text-green-600 hover:text-green-800" title="Invoice">
-                                                <i class="fas fa-file-invoice"></i>
-                                            </button>
-                                            <button class="text-gray-600 hover:text-gray-800" title="More">
-                                                <i class="fas fa-ellipsis-v"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tbody id="reservationsTable">
+                                <!-- Reservations will be populated here -->
                             </tbody>
                         </table>
                     </div>
-                    
-                    <!-- Pagination -->
-                    <div class="px-4 py-3 border-t flex flex-col sm:flex-row justify-between items-center">
-                        <div class="mb-3 sm:mb-0">
-                            <p class="text-sm text-gray-500">
-                                Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">25</span> results
-                            </p>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination" id="pagination">
+                    <!-- Pagination will be populated here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Reservation Modal -->
+    <div class="modal" id="reservationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">New Reservation</h3>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="reservationForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="guestName">Guest Name *</label>
+                            <input type="text" id="guestName" required>
                         </div>
-                        <div class="flex items-center space-x-1">
-                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">Previous</button>
-                            <button class="px-3 py-1 rounded border bg-blue-600 text-white text-sm">1</button>
-                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">2</button>
-                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">3</button>
-                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">4</button>
-                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">5</button>
-                            <button class="px-3 py-1 rounded border text-sm hover:bg-gray-100">Next</button>
+                        <div class="form-group">
+                            <label for="guestEmail">Email *</label>
+                            <input type="email" id="guestEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guestPhone">Phone</label>
+                            <input type="tel" id="guestPhone">
+                        </div>
+                        <div class="form-group">
+                            <label for="roomNumber">Room Number *</label>
+                            <select id="roomNumber" required>
+                                <option value="">Select Room</option>
+                                <!-- Rooms will be populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkInDate">Check-in Date *</label>
+                            <input type="date" id="checkInDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkOutDate">Check-out Date *</label>
+                            <input type="date" id="checkOutDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="adults">Adults *</label>
+                            <select id="adults" required>
+                                <option value="1">1 Adult</option>
+                                <option value="2">2 Adults</option>
+                                <option value="3">3 Adults</option>
+                                <option value="4">4 Adults</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="children">Children</label>
+                            <select id="children">
+                                <option value="0">0 Children</option>
+                                <option value="1">1 Child</option>
+                                <option value="2">2 Children</option>
+                                <option value="3">3 Children</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="roomRate">Room Rate per Night</label>
+                            <input type="number" id="roomRate" step="0.01" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="totalAmount">Total Amount</label>
+                            <input type="number" id="totalAmount" step="0.01" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="reservationStatus">Status</label>
+                            <select id="reservationStatus">
+                                <option value="pending">Pending</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="checked-in">Checked In</option>
+                                <option value="checked-out">Checked Out</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="paymentMethod">Payment Method</label>
+                            <select id="paymentMethod">
+                                <option value="credit-card">Credit Card</option>
+                                <option value="cash">Cash</option>
+                                <option value="bank-transfer">Bank Transfer</option>
+                                <option value="online">Online Payment</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="specialRequests">Special Requests</label>
+                            <textarea id="specialRequests" rows="3" placeholder="Any special requests or notes..."></textarea>
                         </div>
                     </div>
-                </div>
-            </main>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveReservation()">Save Reservation</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Mobile sidebar toggle
-        document.getElementById('mobile-toggle').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('-translate-x-full');
+        // Sample data
+        let reservations = [
+            {
+                id: 'RES001',
+                guestName: 'Sarah Wilson',
+                guestEmail: 'sarah@example.com',
+                guestPhone: '+1234567890',
+                roomNumber: '101',
+                checkInDate: '2024-01-15',
+                checkOutDate: '2024-01-18',
+                adults: 2,
+                children: 0,
+                roomRate: 150,
+                totalAmount: 450,
+                status: 'confirmed',
+                paymentMethod: 'credit-card',
+                specialRequests: 'Late check-in requested',
+                avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b3c2?w=32&h=32&fit=crop&crop=face'
+            },
+            {
+                id: 'RES002',
+                guestName: 'Mike Johnson',
+                guestEmail: 'mike@example.com',
+                guestPhone: '+1234567891',
+                roomNumber: '205',
+                checkInDate: '2024-01-16',
+                checkOutDate: '2024-01-20',
+                adults: 1,
+                children: 0,
+                roomRate: 120,
+                totalAmount: 480,
+                status: 'pending',
+                paymentMethod: 'online',
+                specialRequests: '',
+                avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&crop=face'
+            },
+            {
+                id: 'RES003',
+                guestName: 'Emily Brown',
+                guestEmail: 'emily@example.com',
+                guestPhone: '+1234567892',
+                roomNumber: '310',
+                checkInDate: '2024-01-14',
+                checkOutDate: '2024-01-17',
+                adults: 2,
+                children: 1,
+                roomRate: 180,
+                totalAmount: 540,
+                status: 'checked-in',
+                paymentMethod: 'cash',
+                specialRequests: 'Baby crib needed',
+                avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=32&h=32&fit=crop&crop=face'
+            }
+        ];
+
+        let availableRooms = [
+            { number: '101', type: 'Standard', rate: 150 },
+            { number: '102', type: 'Standard', rate: 150 },
+            { number: '201', type: 'Deluxe', rate: 200 },
+            { number: '202', type: 'Deluxe', rate: 200 },
+            { number: '301', type: 'Suite', rate: 300 },
+            { number: '302', type: 'Suite', rate: 300 }
+        ];
+
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let filteredReservations = [...reservations];
+        let editingReservation = null;
+
+            // Initialize page
+        window.onload = () => {
+            populateRoomDropdown();
+            renderReservations();
+            renderPagination();
+        };
+
+        function populateRoomDropdown() {
+            const roomSelect = document.getElementById('roomNumber');
+            roomSelect.innerHTML = '<option value="">Select Room</option>';
+            availableRooms.forEach(room => {
+                const option = document.createElement('option');
+                option.value = room.number;
+                option.textContent = `${room.number} - ${room.type}`;
+                roomSelect.appendChild(option);
+            });
+        }
+
+        function renderReservations() {
+            const table = document.getElementById('reservationsTable');
+            table.innerHTML = '';
+
+            const start = (currentPage - 1) * itemsPerPage;
+            const pageItems = filteredReservations.slice(start, start + itemsPerPage);
+
+            pageItems.forEach(res => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${res.id}</td>
+                    <td class="guest-info">
+                        <img src="${res.avatar}" alt="">
+                        <div class="guest-details">
+                            <h4>${res.guestName}</h4>
+                            <p>${res.guestEmail}</p>
+                        </div>
+                    </td>
+                    <td>${res.roomNumber}</td>
+                    <td>${res.checkInDate}</td>
+                    <td>${res.checkOutDate}</td>
+                    <td>${calculateNights(res.checkInDate, res.checkOutDate)}</td>
+                    <td><span class="status-badge status-${res.status}">${capitalize(res.status)}</span></td>
+                    <td>$${res.totalAmount.toFixed(2)}</td>
+                    <td class="actions">
+                        <button class="btn btn-sm btn-success" onclick='editReservation("${res.id}")'><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick='deleteReservation("${res.id}")'><i class="fas fa-trash"></i></button>
+                    </td>
+                `;
+                table.appendChild(tr);
+            });
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+            const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
+
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.className = i === currentPage ? 'active' : '';
+                btn.onclick = () => {
+                    currentPage = i;
+                    renderReservations();
+                    renderPagination();
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        function calculateNights(checkIn, checkOut) {
+            const inDate = new Date(checkIn);
+            const outDate = new Date(checkOut);
+            const diff = (outDate - inDate) / (1000 * 60 * 60 * 24);
+            return diff || 1;
+        }
+
+        function capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+        }
+
+        function openModal() {
+            document.getElementById('reservationModal').classList.add('show');
+            document.getElementById('modalTitle').textContent = 'New Reservation';
+            document.getElementById('reservationForm').reset();
+            editingReservation = null;
+        }
+
+        function closeModal() {
+            document.getElementById('reservationModal').classList.remove('show');
+        }
+
+        function saveReservation() {
+            const form = document.getElementById('reservationForm');
+
+            const newRes = {
+                id: editingReservation ? editingReservation.id : `RES${Date.now()}`,
+                guestName: form.guestName.value,
+                guestEmail: form.guestEmail.value,
+                guestPhone: form.guestPhone.value,
+                roomNumber: form.roomNumber.value,
+                checkInDate: form.checkInDate.value,
+                checkOutDate: form.checkOutDate.value,
+                adults: parseInt(form.adults.value),
+                children: parseInt(form.children.value),
+                roomRate: parseFloat(form.roomRate.value || 0),
+                totalAmount: parseFloat(form.totalAmount.value || 0),
+                status: form.reservationStatus.value,
+                paymentMethod: form.paymentMethod.value,
+                specialRequests: form.specialRequests.value,
+                avatar: 'https://i.pravatar.cc/32'
+            };
+
+            if (editingReservation) {
+                const index = reservations.findIndex(r => r.id === editingReservation.id);
+                reservations[index] = newRes;
+            } else {
+                reservations.push(newRes);
+            }
+
+            filteredReservations = [...reservations];
+            renderReservations();
+            renderPagination();
+            closeModal();
+        }
+
+        function editReservation(id) {
+            const res = reservations.find(r => r.id === id);
+            if (!res) return;
+            editingReservation = res;
+            openModal();
+
+            const form = document.getElementById('reservationForm');
+            form.guestName.value = res.guestName;
+            form.guestEmail.value = res.guestEmail;
+            form.guestPhone.value = res.guestPhone;
+            form.roomNumber.value = res.roomNumber;
+            form.checkInDate.value = res.checkInDate;
+            form.checkOutDate.value = res.checkOutDate;
+            form.adults.value = res.adults;
+            form.children.value = res.children;
+            form.roomRate.value = res.roomRate;
+            form.totalAmount.value = res.totalAmount;
+            form.reservationStatus.value = res.status;
+            form.paymentMethod.value = res.paymentMethod;
+            form.specialRequests.value = res.specialRequests;
+            document.getElementById('modalTitle').textContent = `Edit Reservation (${res.id})`;
+        }
+
+        function deleteReservation(id) {
+            if (confirm('Are you sure you want to delete this reservation?')) {
+                reservations = reservations.filter(r => r.id !== id);
+                filteredReservations = [...reservations];
+                renderReservations();
+                renderPagination();
+            }
+        }
+
+        function clearFilters() {
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('dateFromFilter').value = '';
+            document.getElementById('dateToFilter').value = '';
+            filteredReservations = [...reservations];
+            renderReservations();
+            renderPagination();
+        }
+
+        document.getElementById('roomNumber').addEventListener('change', function () {
+            const selectedRoom = availableRooms.find(r => r.number === this.value);
+            const rate = selectedRoom ? selectedRoom.rate : 0;
+            document.getElementById('roomRate').value = rate;
+
+            const inDate = document.getElementById('checkInDate').value;
+            const outDate = document.getElementById('checkOutDate').value;
+            if (inDate && outDate) {
+                const nights = calculateNights(inDate, outDate);
+                document.getElementById('totalAmount').value = (rate * nights).toFixed(2);
+            }
         });
 
-        // Initialize date picker
-        flatpickr("#date-range", {
-            mode: "range",
-            dateFormat: "Y-m-d",
-            defaultDate: ["2025-05-01", "2025-05-31"]
-        });
+        document.getElementById('checkInDate').addEventListener('change', updateTotal);
+        document.getElementById('checkOutDate').addEventListener('change', updateTotal);
+
+        function updateTotal() {
+            const rate = parseFloat(document.getElementById('roomRate').value || 0);
+            const inDate = document.getElementById('checkInDate').value;
+            const outDate = document.getElementById('checkOutDate').value;
+            if (rate && inDate && outDate) {
+                const nights = calculateNights(inDate, outDate);
+                document.getElementById('totalAmount').value = (rate * nights).toFixed(2);
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('overlay').classList.toggle('show');
+        }
+
+        function exportReservations() {
+            alert("Export functionality to be implemented!");
+        }
     </script>
 </body>
 </html>
